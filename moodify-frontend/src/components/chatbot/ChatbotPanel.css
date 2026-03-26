@@ -383,3 +383,23 @@
 .msg-speak-btn:hover {
   opacity: 1 !important;
 }
+
+/* Stop speaking button */
+.chatbot-stop-btn {
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.4);
+  color: var(--accent-pink);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.chatbot-stop-btn:hover {
+  background: rgba(236, 72, 153, 0.3);
+}

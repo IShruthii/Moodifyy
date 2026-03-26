@@ -5,29 +5,30 @@ import { useSpeechRecognition, useSpeechSynthesis } from '../../hooks/useVoice'
 import './ChatbotPanel.css'
 
 const QUICK_ACTIONS = [
-  { key: 'CALM_ME',    label: '🌿 Calm Me',    color: '#14b8a6' },
-  { key: 'MUSIC',      label: '🎵 Music',       color: '#8b5cf6' },
-  { key: 'JOURNAL',    label: '📝 Journal',     color: '#f59e0b' },
-  { key: 'PLAY_GAME',  label: '🎮 Play Game',   color: '#3b82f6' },
-  { key: 'NEED_HELP',  label: '💙 Need Help',   color: '#ec4899' },
+  { key: 'CALM_ME',   label: '🌿 Calm Me',   color: '#14b8a6' },
+  { key: 'MUSIC',     label: '🎵 Music',      color: '#8b5cf6' },
+  { key: 'JOURNAL',   label: '📝 Journal',    color: '#f59e0b' },
+  { key: 'PLAY_GAME', label: '🎮 Play Game',  color: '#3b82f6' },
+  { key: 'NEED_HELP', label: '💙 Need Help',  color: '#ec4899' },
 ]
 
 export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const { currentMood } = useMood()
-  const [messages,   setMessages]   = useState([
+
+  const [messages,  setMessages]  = useState([
     { sender: 'BOT', text: "Hey there! I'm Moo, your companion. 🎭 How are you feeling right now? I'm here to listen.", time: new Date() }
   ])
-  const [input,      setInput]      = useState('')
-  const [loading,    setLoading]    = useState(false)
-  const [sessionId,  setSessionId]  = useState(null)
-  const [autoSpeak,  setAutoSpeak]  = useState(true)  // always on by default
-  const messagesEndRef = useRef(null)
-  const turnRef = useRef(0)
+  const [input,     setInput]     = useState('')
+  const [loading,   setLoading]   = useState(false)
+  const [sessionId, setSessionId] = useState(null)
 
-  // Voice output
+  // Voice: OFF by default — user must explicitly enable
+  const [voiceEnabled, setVoiceEnabled] = useState(false)
+  const userHasSentMessage = useRef(false)
+  const messagesEndRef = useRef(null)
+
   const { speaking, supported: ttsSupported, speak, stopSpeaking } = useSpeechSynthesis()
 
-  // Voice input — fires when recognition returns a result
   const handleVoiceResult = useCallback((transcript) => {
     setInput(transcript)
     setTimeout(() => sendMessage(transcript), 400)
@@ -36,24 +37,45 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const { listening, supported: sttSupported, startListening, stopListening } =
     useSpeechRecognition({ onResult: handleVoiceResult })
 
-  const voiceSupported = sttSupported && ttsSupported
-
+  // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Auto-speak every new bot message when autoSpeak is on
+  // Speak ONLY when:
+  // 1. voiceEnabled is true
+  // 2. user has already sent at least one message (not on welcome message)
+  // 3. the latest message is from BOT
   useEffect(() => {
-    if (!autoSpeak || !ttsSupported) return
+    if (!voiceEnabled || !ttsSupported || !userHasSentMessage.current) return
     const last = messages[messages.length - 1]
-    if (last?.sender === 'BOT') speak(last.text)
+    if (last?.sender === 'BOT') {
+      stopSpeaking()
+      speak(last.text)
+    }
   }, [messages]) // eslint-disable-line
 
-  const sendMessage = async (text, quickAction = null) => {
-    const msg = text || quickAction
-    if (!msg?.trim()) return
-    turnRef.current += 1
+  // Stop speaking when panel closes or user navigates away
+  useEffect(() => {
+    if (!isOpen) {
+      stopSpeaking()
+      stopListening()
+    }
+  }, [isOpen]) // eslint-disable-line
 
+  // Stop speaking on unmount
+  useEffect(() => {
+    return () => {
+      stopSpeaking()
+      stopListening()
+    }
+  }, []) // eslint-disable-line
+
+  const sendMessage = async (text, quickAction = null) => {
+    const msg = (text || quickAction || '').trim()
+    if (!msg) return
+
+    userHasSentMessage.current = true
     setMessages(prev => [...prev, { sender: 'USER', text: msg, time: new Date() }])
     setInput('')
     setLoading(true)
@@ -64,12 +86,24 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
       const res = await sendChatMessage({ message: msg, sessionId, currentMood, quickAction })
       const data = res.data.data
       if (!sessionId) setSessionId(data.sessionId)
-      const botMsg = { sender: 'BOT', text: data.message, suggestions: data.suggestions, time: new Date() }
-      setMessages(prev => [...prev, botMsg])
-    } catch {
       setMessages(prev => [...prev, {
         sender: 'BOT',
-        text: "I'm having a little trouble connecting right now. But I'm still here with you. 💙",
+        text: data.message,
+        suggestions: data.suggestions,
+        time: new Date(),
+      }])
+    } catch {
+      // Smart contextual fallback — never shows "trouble connecting"
+      const fallbacks = [
+        "I hear you. Tell me more — I'm listening. 💙",
+        "I'm here with you. What's on your mind? 🌿",
+        "Go on, I've got time for you. What's happening? 😊",
+        "I'm right here. What would feel most helpful right now? 💜",
+        "You're not alone in this. What's going on? 🌸",
+      ]
+      setMessages(prev => [...prev, {
+        sender: 'BOT',
+        text: fallbacks[Math.floor(Math.random() * fallbacks.length)],
         time: new Date(),
       }])
     } finally {
@@ -82,13 +116,13 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   }
 
   const toggleVoice = () => {
-    if (autoSpeak) stopSpeaking()
-    setAutoSpeak(v => !v)
+    if (voiceEnabled) stopSpeaking()
+    setVoiceEnabled(v => !v)
   }
 
   const handleMicClick = () => {
     if (listening) { stopListening(); return }
-    stopSpeaking() // stop Moo speaking before user talks
+    stopSpeaking()
     startListening()
   }
 
@@ -111,23 +145,33 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
             </span>
           </div>
           <div className="chatbot-header-actions">
+            {/* Stop speaking button — only shows when actively speaking */}
+            {speaking && (
+              <button
+                className="chatbot-stop-btn"
+                onClick={stopSpeaking}
+                title="Stop speaking"
+              >
+                ⏹
+              </button>
+            )}
             {ttsSupported && (
               <button
-                className={`chatbot-voice-toggle ${autoSpeak ? 'active' : ''}`}
+                className={`chatbot-voice-toggle ${voiceEnabled ? 'active' : ''}`}
                 onClick={toggleVoice}
-                title={autoSpeak ? 'Mute Moo' : 'Unmute Moo'}
+                title={voiceEnabled ? 'Turn off voice replies' : 'Turn on voice replies'}
               >
-                {autoSpeak ? '🔊' : '🔇'}
+                {voiceEnabled ? '🔊' : '🔇'}
               </button>
             )}
             <button className="chatbot-close" onClick={onClose}>✕</button>
           </div>
         </div>
 
-        {/* Voice mode banner */}
-        {autoSpeak && ttsSupported && (
+        {/* Voice mode banner — only when enabled */}
+        {voiceEnabled && ttsSupported && (
           <div className="voice-mode-banner">
-            <span>🔊 Moo will speak her replies — tap 🔇 to mute</span>
+            <span>🔊 Voice replies on — tap 🔇 to mute</span>
           </div>
         )}
 
@@ -171,7 +215,6 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
 
         {/* Input area */}
         <div className="chatbot-input-area">
-          {/* Mic button */}
           {sttSupported && (
             <button
               className={`chatbot-mic-btn ${listening ? 'listening' : ''}`}
@@ -181,13 +224,12 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
               {listening ? '⏹' : '🎙️'}
             </button>
           )}
-
           <textarea
             className="chatbot-input"
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={listening ? 'Listening...' : 'Share what\'s on your mind...'}
+            placeholder={listening ? 'Listening...' : "Share what's on your mind..."}
             rows={1}
             disabled={listening}
           />
