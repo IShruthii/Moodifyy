@@ -1,0 +1,164 @@
+.recs-page {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.recs-loading, .recs-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 20px;
+}
+
+.recs-header {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.recs-mood-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 50px;
+  margin-bottom: 16px;
+}
+
+.recs-mood-emoji { font-size: 24px; }
+.recs-mood-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-purple-light);
+  text-transform: capitalize;
+}
+
+.recs-title {
+  font-size: 32px;
+  font-weight: 800;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.recs-message {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Journal & Challenge */
+.recs-journal-card, .recs-challenge-card {
+  display: flex;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+
+.recs-journal-card {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.recs-challenge-card {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.25);
+}
+
+.journal-icon, .challenge-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.journal-title, .challenge-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.journal-text, .challenge-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Tabs */
+.recs-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.recs-tabs::-webkit-scrollbar { display: none; }
+
+.recs-tab {
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.recs-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.recs-tab.active {
+  background: var(--gradient-main);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* Grid */
+.recs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .recs-grid { grid-template-columns: 1fr; }
+  .recs-title { font-size: 26px; }
+}
+
+/* Mood check-in nudge banner */
+.recs-checkin-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(20, 184, 166, 0.08) 100%);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 16px;
+  flex-wrap: wrap;
+}
+
+.recs-checkin-icon { font-size: 22px; flex-shrink: 0; }
+
+.recs-checkin-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-secondary);
+  min-width: 160px;
+}
+
+.recs-checkin-btn { flex-shrink: 0; white-space: nowrap; }

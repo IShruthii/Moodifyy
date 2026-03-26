@@ -1,0 +1,219 @@
+.checkin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 480;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.checkin-card {
+  width: 100%;
+  max-width: 540px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: linear-gradient(160deg, #1a1035 0%, #0f0a1e 100%);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 28px;
+  padding: 32px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(124, 58, 237, 0.15);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 58, 237, 0.3) transparent;
+}
+
+/* Header */
+.checkin-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.checkin-from-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--mc, rgba(124, 58, 237, 0.4));
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mc, var(--accent-purple-light));
+}
+
+.checkin-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.checkin-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Mood grid */
+.checkin-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.checkin-mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 11px 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: var(--text-secondary);
+}
+
+.checkin-mood-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--mood-color);
+  transform: scale(1.08);
+  color: var(--text-primary);
+}
+
+.checkin-mood-btn.selected {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--mood-color);
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(255, 255, 255, 0.07);
+  transform: scale(1.1);
+  color: var(--text-primary);
+}
+
+.checkin-emoji { font-size: 24px; line-height: 1; }
+.checkin-label { font-size: 10px; font-weight: 600; text-align: center; }
+
+/* Actions */
+.checkin-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkin-cta { width: 100%; font-size: 15px; padding: 14px; }
+
+.checkin-skip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px;
+  font-family: var(--font-family);
+  transition: color 0.2s ease;
+}
+
+.checkin-skip:hover { color: var(--text-secondary); }
+
+/* ── Result screen ── */
+.checkin-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+  text-align: center;
+}
+
+/* Transition row */
+.checkin-transition {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.checkin-mood-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid var(--mc, rgba(124, 58, 237, 0.4));
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.checkin-mood-pill span:first-child { font-size: 22px; }
+
+.checkin-arrow {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.arrow-up   { color: #10b981; }
+.arrow-same { color: #6366f1; }
+.arrow-down { color: #f43f5e; }
+
+/* Badge */
+.checkin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.checkin-badge.improved {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.checkin-badge.same {
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #818cf8;
+}
+
+.checkin-badge.declined {
+  background: rgba(20, 184, 166, 0.12);
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  color: #2dd4bf;
+}
+
+.checkin-badge-icon { font-size: 20px; }
+
+.checkin-message {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 380px;
+}
+
+.checkin-result-actions { width: 100%; }
+
+@media (max-width: 480px) {
+  .checkin-card { padding: 24px 16px 20px; }
+  .checkin-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .checkin-mood-btn { padding: 10px 4px; }
+  .checkin-emoji { font-size: 20px; }
+  .checkin-title { font-size: 19px; }
+  .checkin-transition { gap: 8px; }
+  .checkin-mood-pill { padding: 8px 12px; font-size: 13px; }
+}

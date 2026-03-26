@@ -1,0 +1,237 @@
+.analytics-page {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.analytics-header { margin-bottom: 4px; }
+
+.analytics-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.summary-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-2px);
+}
+
+.summary-icon { font-size: 32px; }
+
+.summary-value {
+  font-size: 28px;
+  font-weight: 800;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.summary-mood {
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.analytics-section {}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+/* Mood Frequency */
+.mood-freq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mood-freq-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mf-emoji { font-size: 20px; width: 24px; text-align: center; }
+
+.mf-mood {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  width: 100px;
+  text-transform: capitalize;
+}
+
+.mf-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mf-bar {
+  height: 100%;
+  background: var(--gradient-main);
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.mf-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  width: 24px;
+  text-align: right;
+}
+
+/* Badges */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.badges-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.badges-empty span { font-size: 40px; }
+.badges-empty p { font-size: 15px; }
+.badges-hint { font-size: 13px; color: var(--text-muted); }
+
+@media (max-width: 768px) {
+  .analytics-summary { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .summary-value { font-size: 22px; }
+  .badges-grid { grid-template-columns: 1fr; }
+}
+
+/* Feedback summary */
+.feedback-summary-card {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fb-avg-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 100px;
+}
+
+.fb-avg-score {
+  font-size: 48px;
+  font-weight: 900;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.fb-avg-stars { display: flex; gap: 2px; }
+
+.fb-avg-star { font-size: 18px; color: rgba(255,255,255,0.15); }
+.fb-avg-star.lit { color: #f59e0b; }
+
+.fb-avg-label { font-size: 12px; color: var(--text-muted); text-align: center; }
+
+.fb-bar-breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.fb-bar-row { display: flex; align-items: center; gap: 8px; }
+
+.fb-bar-label { font-size: 12px; color: var(--text-muted); width: 24px; text-align: right; }
+
+.fb-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fb-bar-fill {
+  height: 100%;
+  background: var(--gradient-main);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.fb-bar-count { font-size: 12px; color: var(--text-muted); width: 16px; }
+
+/* Recent feedback */
+.fb-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.fb-recent-item {
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fb-recent-stars { font-size: 14px; color: #f59e0b; letter-spacing: 2px; }
+
+.fb-recent-comment {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.fb-recent-transition {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}

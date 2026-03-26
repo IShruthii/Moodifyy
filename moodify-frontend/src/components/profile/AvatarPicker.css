@@ -1,0 +1,37 @@
+.avatar-picker {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.avatar-option {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 8px;
+}
+
+.avatar-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(124, 58, 237, 0.4);
+  transform: scale(1.1);
+}
+
+.avatar-option.selected {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 16px rgba(124, 58, 237, 0.3);
+  transform: scale(1.1);
+}
+
+.avatar-emoji { font-size: 28px; }
+
+@media (max-width: 480px) {
+  .avatar-picker { grid-template-columns: repeat(4, 1fr); }
+}
