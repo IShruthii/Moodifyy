@@ -5,13 +5,12 @@ databases:
     plan: free
 
 services:
-  # ── Backend (Docker) ───────────────────────────────────────────────────────
   - type: web
     name: moodify-backend
     runtime: docker
     dockerfilePath: ./moodify-backend/Dockerfile
     dockerContext: ./moodify-backend
-    plan: free
+    plan: starter
     healthCheckPath: /actuator/health
     envVars:
       - key: PORT
@@ -35,13 +34,12 @@ services:
       - key: FRONTEND_URL
         value: https://moodify-frontend.onrender.com
 
-  # ── Frontend (Static Site) ─────────────────────────────────────────────────
   - type: web
     name: moodify-frontend
     runtime: static
     staticPublishPath: ./moodify-frontend/dist
     buildCommand: cd moodify-frontend && npm install && npm run build
-    plan: free
+    plan: starter
     routes:
       - type: rewrite
         source: /*
