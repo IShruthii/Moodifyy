@@ -1,6 +1,7 @@
 package com.moodify.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -56,15 +57,15 @@ public class GeminiService {
             String url = apiUrl + "?key=" + apiKey;
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    url, HttpMethod.POST, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {});
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 String result = extractText(response.getBody());
                 if (result != null && !result.isBlank()) {
                     return result;
                 }
-            } else {
-                System.err.println("[GeminiService] Non-200 response: " + response.getStatusCode());
             }
         } catch (org.springframework.web.client.HttpClientErrorException e) {
             System.err.println("[GeminiService] HTTP error " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
@@ -149,17 +150,25 @@ public class GeminiService {
         return sb.toString();
     }
 
-    @SuppressWarnings("unchecked")
     private String extractText(Map<String, Object> body) {
         try {
-            List<Map<String, Object>> candidates = (List<Map<String, Object>>) body.get("candidates");
-            if (candidates == null || candidates.isEmpty()) return null;
-            Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
-            if (content == null) return null;
-            List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
-            if (parts == null || parts.isEmpty()) return null;
-            String text = (String) parts.get(0).get("text");
-            return text != null ? text.trim() : null;
+            Object candidatesObj = body.get("candidates");
+            if (!(candidatesObj instanceof List<?> candidatesList) || candidatesList.isEmpty()) return null;
+
+            Object first = candidatesList.get(0);
+            if (!(first instanceof Map<?, ?> candidateMap)) return null;
+
+            Object contentObj = candidateMap.get("content");
+            if (!(contentObj instanceof Map<?, ?> contentMap)) return null;
+
+            Object partsObj = contentMap.get("parts");
+            if (!(partsObj instanceof List<?> partsList) || partsList.isEmpty()) return null;
+
+            Object firstPart = partsList.get(0);
+            if (!(firstPart instanceof Map<?, ?> partMap)) return null;
+
+            Object text = partMap.get("text");
+            return text instanceof String s ? s.trim() : null;
         } catch (Exception e) {
             return null;
         }

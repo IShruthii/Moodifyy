@@ -1,0 +1,51 @@
+databases:
+  - name: moodify-db
+    databaseName: moodify
+    user: moodify_user
+    plan: free
+
+services:
+  # ── Backend (Docker) ───────────────────────────────────────────────────────
+  - type: web
+    name: moodify-backend
+    runtime: docker
+    dockerfilePath: ./moodify-backend/Dockerfile
+    dockerContext: ./moodify-backend
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: moodify-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: moodify-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: moodify-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        value: AIzaSyAFcfkuun-qYGRBv2M9TnmwuZ5Rx5TQHQk
+      - key: FRONTEND_URL
+        value: https://moodify-frontend.onrender.com
+
+  # ── Frontend (Static Site) ─────────────────────────────────────────────────
+  - type: web
+    name: moodify-frontend
+    runtime: static
+    staticPublishPath: ./moodify-frontend/dist
+    buildCommand: cd moodify-frontend && npm install && npm run build
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://moodify-backend.onrender.com
