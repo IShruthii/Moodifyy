@@ -13,11 +13,18 @@ WORKDIR /app
 RUN addgroup -S moodify && adduser -S moodify -G moodify
 
 COPY --from=builder /app/target/moodify-backend.jar app.jar
-COPY start.sh start.sh
-
-RUN chmod +x start.sh && chown -R moodify:moodify /app
+RUN chown -R moodify:moodify /app
 
 USER moodify
 EXPOSE 8080
 
-ENTRYPOINT ["/app/start.sh"]
+# Inline the startup logic — no external shell script needed
+CMD ["sh", "-c", "\
+  if [ -n \"$DB_HOST\" ] && [ -n \"$DB_PORT\" ] && [ -n \"$DB_NAME\" ]; then \
+    export SPRING_DATASOURCE_URL=\"jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}\"; \
+  fi; \
+  case \"$SPRING_DATASOURCE_URL\" in \
+    postgres://*) export SPRING_DATASOURCE_URL=\"jdbc:postgresql://${SPRING_DATASOURCE_URL#postgres://}\";; \
+    postgresql://*) export SPRING_DATASOURCE_URL=\"jdbc:postgresql://${SPRING_DATASOURCE_URL#postgresql://}\";; \
+  esac; \
+  exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar"]
