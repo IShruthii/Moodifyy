@@ -42,11 +42,15 @@ services:
     name: moodify-frontend
     runtime: static
     rootDir: moodify-frontend
-    buildCommand: echo "Using pre-built dist"
+    buildCommand: echo "pre-built"
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
         value: https://moodify-backend.onrender.com
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
     routes:
       - type: rewrite
         source: /*
