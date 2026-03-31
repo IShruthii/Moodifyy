@@ -191,7 +191,7 @@ public class RecommendationServiceImpl implements RecommendationService {
                     music("Naa Peru Surya — Inspiring Songs", "Telugu songs full of hope & energy", "🌟", "Telugu inspiring hopeful songs"),
                     music("New Beginnings — Telugu 2024 Hits", "Fresh Telugu songs for a new chapter", "🌅", "Telugu new songs 2024 hits"),
                     music("Bheemla Nayak — Uplifting Hits", "Powerful Telugu songs to lift your spirit", "✨", "Telugu uplifting powerful songs"));
-            case "SAD", "INSECURE" -> Arrays.asList(
+            case "INSECURE" -> Arrays.asList(
                     music("Nee Jathaga Nenundali", "Telugu songs about self-worth & love", "💜", "Telugu self love songs"),
                     music("Geetha Govindam Melodies", "Sweet, comforting Telugu love songs", "🌸", "Geetha Govindam Telugu songs"),
                     music("Manasantha Nuvve — Comfort Songs", "Warm Telugu songs for the heart", "🌿", "Telugu comfort warm songs"));
@@ -278,57 +278,6 @@ public class RecommendationServiceImpl implements RecommendationService {
         };
     }
 
-        return switch (mood) {
-            case "HAPPY", "EXCITED" -> Arrays.asList(
-                    music("Happy Vibes" + langLabel, "Upbeat songs to match your energy", "🎵", prefix + "happy vibes playlist"),
-                    music("Feel Good Hits" + langLabel, "Chart-topping feel-good tracks", "🎶", prefix + "feel good hits"),
-                    music("Dance Party Mix" + langLabel, "Get up and move to the beat", "💃", prefix + "dance party mix"));
-            case "SAD", "DISAPPOINTED" -> Arrays.asList(
-                    music("Healing Melodies" + langLabel, "Gentle songs for the soul", "🎵", prefix + "healing sad songs"),
-                    music("Comfort Songs" + langLabel, "Songs that feel like a warm hug", "🎶", prefix + "comfort emotional songs"),
-                    music("Rainy Day Playlist" + langLabel, "Soft music for quiet moments", "🌧️", prefix + "rainy day acoustic"));
-            case "LONELY" -> Arrays.asList(
-                    music("You Are Not Alone" + langLabel, "Songs that remind you someone cares", "🎵", prefix + "you are not alone songs"),
-                    music("Warm Acoustic" + langLabel, "Intimate acoustic tracks", "🎶", prefix + "warm acoustic covers"),
-                    music("Late Night Feelings" + langLabel, "Honest songs for quiet nights", "🌙", prefix + "late night feelings"));
-            case "ANGRY", "FRUSTRATED" -> Arrays.asList(
-                    music("Release & Let Go" + langLabel, "Channel that energy into music", "🎵", prefix + "release anger music"),
-                    music("Power Anthems" + langLabel, "Powerful tracks to let it all out", "🎸", prefix + "power anthems"),
-                    music("High Energy Mix" + langLabel, "High-energy beats to burn it off", "💥", prefix + "high energy workout mix"));
-            case "STRESSED", "ANXIOUS", "OVERWHELMED" -> Arrays.asList(
-                    music("Calm & Relax" + langLabel, "Soothing sounds to ease your mind", "🎵", prefix + "calm relax stress relief"),
-                    music("Meditation Music" + langLabel, "Deep focus and inner peace", "🧘", prefix + "meditation peaceful music"),
-                    music("Nature Sounds" + langLabel, "Pure calm", "🌿", prefix + "nature sounds relaxing"));
-            case "TIRED" -> Arrays.asList(
-                    music("Gentle Wake-Up" + langLabel, "Soft music to ease you into the day", "🎵", prefix + "gentle morning music"),
-                    music("Chill Lofi Beats" + langLabel, "Low-energy background music", "☕", prefix + "lofi chill beats"),
-                    music("Acoustic Mornings" + langLabel, "Warm acoustic to start slow", "🌅", prefix + "acoustic morning playlist"));
-            case "BORED" -> Arrays.asList(
-                    music("Discover New Tracks" + langLabel, "Fresh tracks you haven't heard yet", "🎵", prefix + "new music 2024"),
-                    music("World Music Mix" + langLabel, "Explore sounds from around the globe", "🌍", prefix + "world music mix"),
-                    music("Indie Gems" + langLabel, "Hidden gems to spark curiosity", "💎", prefix + "indie pop gems"));
-            case "MOTIVATED", "CONFIDENT" -> Arrays.asList(
-                    music("Power Anthems" + langLabel, "Songs that make you unstoppable", "💪", prefix + "power motivation anthems"),
-                    music("Workout Motivation" + langLabel, "High-energy tracks to power you up", "⚡", prefix + "workout motivation"),
-                    music("Boss Mode" + langLabel, "Music for when you mean business", "😎", prefix + "boss mode focus playlist"));
-            case "RELAXED", "CALM", "PEACEFUL" -> Arrays.asList(
-                    music("Ambient Chill" + langLabel, "Soft ambient sounds for deep relaxation", "🎵", prefix + "ambient chill relaxing"),
-                    music("Jazz & Coffee" + langLabel, "Smooth jazz for a peaceful afternoon", "☕", prefix + "jazz coffee smooth"),
-                    music("Spa & Wellness" + langLabel, "Tranquil sounds for mind and body", "🛁", prefix + "spa wellness music"));
-            case "HOPEFUL" -> Arrays.asList(
-                    music("Uplifting Anthems" + langLabel, "Songs that fill you with hope", "🌟", prefix + "uplifting hopeful songs"),
-                    music("Inspirational Hits" + langLabel, "Music that reminds you anything is possible", "✨", prefix + "inspirational hits"),
-                    music("New Beginnings" + langLabel, "Fresh starts deserve fresh sounds", "🌅", prefix + "new beginnings music"));
-            case "INSECURE" -> Arrays.asList(
-                    music("Self-Love Playlist" + langLabel, "Songs that remind you of your worth", "💜", prefix + "self love playlist"),
-                    music("Empowerment Anthems" + langLabel, "Music to build you back up", "🌸", prefix + "empowerment anthems"),
-                    music("Gentle Affirmations" + langLabel, "Soft music with positive energy", "🌿", prefix + "gentle affirmation music"));
-            default -> Arrays.asList(
-                    music("Chill Lofi Beats" + langLabel, "Easy background music for any mood", "🎵", prefix + "lofi chill beats"),
-                    music("Top Hits" + langLabel, "The most popular tracks right now", "🎶", prefix + "top hits 2024"),
-                    music("Feel Good Mix" + langLabel, "A little bit of everything good", "😊", prefix + "feel good mix"));
-        };
-    }
     // ── MOVIES ────────────────────────────────────────────────────────────────
 
     private List<RecommendationItem> buildMovies(String mood) {
