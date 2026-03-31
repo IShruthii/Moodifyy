@@ -8,6 +8,7 @@ import MoodCheckIn from '../components/common/MoodCheckIn'
 import FeedbackModal from '../components/common/FeedbackModal'
 import { getRecommendations } from '../api/recommendationApi'
 import { useMood } from '../context/MoodContext'
+import { useAuth } from '../context/AuthContext'
 import './RecommendationsPage.css'
 
 const TABS = [
@@ -23,6 +24,7 @@ const AUTO_CHECKIN_MS = 3 * 60 * 1000
 
 export default function RecommendationsPage() {
   const { currentMood, setCurrentMood } = useMood()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const [recommendations, setRecommendations] = useState(null)
   const [activeTab,  setActiveTab]  = useState('music')
@@ -32,6 +34,39 @@ export default function RecommendationsPage() {
   const [showFeedback, setShowFeedback] = useState(false)
   const [moodAfter,    setMoodAfter]    = useState(null)
   const timerRef = useRef(null)
+
+  // My Playlist
+  const playlistKey = `moodify_playlist_${user?.id}`
+  const [playlist, setPlaylist] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(`moodify_playlist_${user?.id}`) || '[]') } catch { return [] }
+  })
+  const [songInput, setSongInput] = useState('')
+
+  const addSong = () => {
+    const trimmed = songInput.trim()
+    if (!trimmed) return
+    const updated = [...playlist, { name: trimmed, addedAt: Date.now() }]
+    setPlaylist(updated)
+    localStorage.setItem(playlistKey, JSON.stringify(updated))
+    setSongInput('')
+  }
+
+  const removeSong = (idx) => {
+    const updated = playlist.filter((_, i) => i !== idx)
+    setPlaylist(updated)
+    localStorage.setItem(playlistKey, JSON.stringify(updated))
+  }
+
+  const searchSong = (name, platform) => {
+    const q = encodeURIComponent(name)
+    const urls = {
+      spotify: `https://open.spotify.com/search/${q}`,
+      youtube: `https://music.youtube.com/search?q=${q}`,
+      jiosaavn: `https://www.jiosaavn.com/search/${q}`,
+      gaana: `https://gaana.com/search/${q}`,
+    }
+    window.open(urls[platform], '_blank')
+  }
 
   useEffect(() => {
     if (!currentMood) { navigate('/mood'); return }
@@ -186,6 +221,49 @@ export default function RecommendationsPage() {
             />
           ))}
         </div>
+
+        {/* My Playlist — only on Music tab */}
+        {activeTab === 'music' && (
+          <div className="my-playlist-section">
+            <h2 className="my-playlist-title">🎧 My Playlist</h2>
+            <p className="my-playlist-sub">Add your favourite songs — search them instantly on any platform</p>
+
+            <div className="my-playlist-input-row">
+              <input
+                className="input my-playlist-input"
+                placeholder="Song name or artist... e.g. Nuvvu Nuvvu, Arijit Singh"
+                value={songInput}
+                onChange={e => setSongInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && addSong()}
+              />
+              <button className="btn btn-primary my-playlist-add-btn" onClick={addSong}>
+                + Add
+              </button>
+            </div>
+
+            {playlist.length === 0 ? (
+              <div className="my-playlist-empty">
+                <span>🎵</span>
+                <p>No songs yet. Add your favourites above!</p>
+              </div>
+            ) : (
+              <div className="my-playlist-list">
+                {playlist.map((song, i) => (
+                  <div key={i} className="my-playlist-item">
+                    <span className="my-playlist-song-name">🎵 {song.name}</span>
+                    <div className="my-playlist-actions">
+                      <button className="playlist-platform-btn spotify" onClick={() => searchSong(song.name, 'spotify')}>Spotify</button>
+                      <button className="playlist-platform-btn youtube" onClick={() => searchSong(song.name, 'youtube')}>YT Music</button>
+                      <button className="playlist-platform-btn jiosaavn" onClick={() => searchSong(song.name, 'jiosaavn')}>JioSaavn</button>
+                      <button className="playlist-platform-btn gaana" onClick={() => searchSong(song.name, 'gaana')}>Gaana</button>
+                      <button className="playlist-remove-btn" onClick={() => removeSong(i)}>✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <ChatbotFAB />
     </Layout>
