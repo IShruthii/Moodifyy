@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Layout from '../components/common/Layout'
 import ChatbotFAB from '../components/chatbot/ChatbotFAB'
 import PermissionPrompt from '../components/common/PermissionPrompt'
 import { useAuth } from '../context/AuthContext'
 import { getTodaysMood } from '../api/moodApi'
-import { getAnalytics } from '../api/analyticsApi'
 import { getPreference } from '../api/preferenceApi'
 import { getAvatarEmoji } from '../components/profile/AvatarPicker'
 import './DashboardPage.css'
-
-const GREETINGS = [
-  "Welcome back to Moodify",
-  "Good to see you again",
-  "Your companion is here",
-  "Ready to check in?",
-]
 
 function getTimeGreeting() {
   const h = new Date().getHours()
@@ -28,9 +20,7 @@ function getTimeGreeting() {
 export default function DashboardPage() {
   const { user } = useAuth()
   const [todaysMood, setTodaysMood] = useState(null)
-  const [analytics, setAnalytics] = useState(null)
   const [preference, setPreference] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [showPermissions, setShowPermissions] = useState(false)
 
   useEffect(() => {
@@ -49,25 +39,21 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [moodRes, analyticsRes, prefRes] = await Promise.all([
+        const [moodRes, prefRes] = await Promise.all([
           getTodaysMood(),
-          getAnalytics(),
           getPreference(),
         ])
         setTodaysMood(moodRes.data.data)
-        setAnalytics(analyticsRes.data.data)
         setPreference(prefRes.data.data)
       } catch {
         // silent
-      } finally {
-        setLoading(false)
       }
     }
     fetchData()
-  }, [])
+  }, [user?.avatarId])
 
   const displayName = preference?.displayName || user?.name || 'Friend'
-  const avatarEmoji = getAvatarEmoji(preference?.avatarId)
+  const avatarEmoji = getAvatarEmoji(preference?.avatarId || user?.avatarId)
 
   return (
     <Layout>
@@ -101,9 +87,14 @@ export default function DashboardPage() {
                   {todaysMood.note && <p className="mood-logged-note">"{todaysMood.note}"</p>}
                 </div>
               </div>
-              <Link to="/recommendations" className="btn btn-primary">
-                See Recommendations ✨
-              </Link>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <Link to="/mood" className="btn btn-secondary btn-sm">
+                  Change 🔄
+                </Link>
+                <Link to="/recommendations" className="btn btn-primary">
+                  See Recommendations ✨
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="mood-prompt">
@@ -120,40 +111,6 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-
-        {/* Stats Row */}
-        {!loading && analytics && (
-          <div className="dashboard-stats">
-            <div className="stat-card">
-              <span className="stat-icon">🔥</span>
-              <div className="stat-info">
-                <span className="stat-value">{analytics.currentStreak}</span>
-                <span className="stat-label">Day Streak</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <span className="stat-icon">📊</span>
-              <div className="stat-info">
-                <span className="stat-value">{analytics.totalEntries}</span>
-                <span className="stat-label">Total Entries</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <span className="stat-icon">✨</span>
-              <div className="stat-info">
-                <span className="stat-value">{analytics.positiveRatio}%</span>
-                <span className="stat-label">Positive Days</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <span className="stat-icon">🏆</span>
-              <div className="stat-info">
-                <span className="stat-value">{analytics.badges?.length || 0}</span>
-                <span className="stat-label">Badges</span>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Quick Actions */}
         <div className="dashboard-section">
@@ -177,25 +134,6 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
-
-        {/* Most Frequent Mood */}
-        {analytics?.mostFrequentMood && (
-          <div className="dashboard-section">
-            <h2 className="section-title">Your Mood Pattern</h2>
-            <div className="mood-pattern-card glass">
-              <div className="mood-pattern-left">
-                <span className="mood-pattern-emoji">{analytics.mostFrequentMoodEmoji}</span>
-                <div>
-                  <p className="mood-pattern-label">Most frequent mood</p>
-                  <h3 className="mood-pattern-mood">{analytics.mostFrequentMood}</h3>
-                </div>
-              </div>
-              <Link to="/analytics" className="btn btn-secondary btn-sm">
-                View Insights →
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
       <ChatbotFAB />
     </Layout>

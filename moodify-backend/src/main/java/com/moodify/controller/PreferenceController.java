@@ -21,16 +21,28 @@ public class PreferenceController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<UserPreference>> getPreference() {
+    public ResponseEntity<ApiResponse<PreferenceRequest>> getPreference() {
         Long userId = securityUtils.getCurrentUserId();
         UserPreference preference = preferenceService.getPreference(userId);
-        return ResponseEntity.ok(ApiResponse.success(preference));
+        PreferenceRequest dto = toDto(preference);
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<UserPreference>> savePreference(@RequestBody PreferenceRequest request) {
+    public ResponseEntity<ApiResponse<PreferenceRequest>> savePreference(@RequestBody PreferenceRequest request) {
         Long userId = securityUtils.getCurrentUserId();
         UserPreference preference = preferenceService.savePreference(userId, request);
-        return ResponseEntity.ok(ApiResponse.success("Preferences saved", preference));
+        PreferenceRequest dto = toDto(preference);
+        return ResponseEntity.ok(ApiResponse.success("Preferences saved", dto));
+    }
+
+    private PreferenceRequest toDto(UserPreference p) {
+        PreferenceRequest dto = new PreferenceRequest();
+        dto.setDisplayName(p.getDisplayName());
+        dto.setAvatarId(p.getAvatarId());
+        dto.setTheme(p.getTheme());
+        dto.setNotificationEnabled(p.isNotificationEnabled());
+        dto.setDailyReminderTime(p.getDailyReminderTime());
+        return dto;
     }
 }

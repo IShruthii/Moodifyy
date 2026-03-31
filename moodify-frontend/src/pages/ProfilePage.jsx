@@ -21,6 +21,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
     getPreference()
@@ -41,14 +42,15 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setSaveError('')
     try {
       await savePreference(form)
       changeTheme(form.theme)
-      updateUser({ name: form.displayName, profileSetup: true })
+      updateUser({ name: form.displayName, profileSetup: true, avatarId: form.avatarId })
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
-    } catch {
-      // silent
+    } catch (err) {
+      setSaveError(err.response?.data?.message || 'Failed to save. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -139,6 +141,11 @@ export default function ProfilePage() {
           >
             {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Preferences'}
           </button>
+          {saveError && (
+            <p style={{ color: '#f87171', textAlign: 'center', fontSize: 14, marginTop: 8 }}>
+              ⚠️ {saveError}
+            </p>
+          )}
         </div>
       </div>
       <ChatbotFAB />
