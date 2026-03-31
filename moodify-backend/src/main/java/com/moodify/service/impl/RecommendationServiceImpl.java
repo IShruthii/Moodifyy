@@ -146,20 +146,137 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     private List<RecommendationItem> buildMusic(String mood, String lang) {
-        String prefix = switch (lang) {
-            case "telugu"  -> "Telugu ";
-            case "hindi"   -> "Hindi ";
-            case "bts"     -> "BTS ";
-            case "private" -> "private album ";
-            default        -> "";
+        boolean isTelugu  = "telugu".equals(lang);
+        boolean isHindi   = "hindi".equals(lang);
+        boolean isBts     = "bts".equals(lang);
+        boolean isPrivate = "private".equals(lang);
+
+        String prefix = isTelugu ? "Telugu " : isHindi ? "Hindi " : isBts ? "BTS " : isPrivate ? "private album " : "";
+
+        // Telugu-specific titles per mood
+        if (isTelugu) return switch (mood) {
+            case "HAPPY", "EXCITED" -> Arrays.asList(
+                    music("Pelli Sandadi Hits", "Happy Telugu wedding & celebration songs", "🎉", "Telugu happy celebration songs"),
+                    music("Dhamaka Party Songs", "High energy Telugu dance hits", "💃", "Telugu party dance songs"),
+                    music("Jukebox Hits — SPB & Chitra", "Classic feel-good Telugu melodies", "🎵", "SPB Chitra Telugu hits"));
+            case "SAD", "DISAPPOINTED" -> Arrays.asList(
+                    music("Manasuna Unna — Sad Melodies", "Heart-touching Telugu sad songs", "💔", "Telugu sad songs melodies"),
+                    music("Ilayaraja Telugu Classics", "Timeless emotional Telugu tracks", "🎶", "Ilayaraja Telugu emotional songs"),
+                    music("Nee Kosam — Breakup Songs", "Songs for a heavy heart", "🌧️", "Telugu breakup sad songs"));
+            case "LONELY" -> Arrays.asList(
+                    music("Oka Laila Kosam — Longing Songs", "Songs about missing someone", "🌙", "Telugu longing missing songs"),
+                    music("Nuvvu Nuvvu — Soft Melodies", "Gentle Telugu songs for quiet moments", "🎵", "Telugu soft gentle melodies"),
+                    music("Manasantha Nuvve Hits", "Soulful Telugu love songs", "💜", "Telugu soulful love songs"));
+            case "ANGRY", "FRUSTRATED" -> Arrays.asList(
+                    music("Mass Beats — Power Songs", "High energy Telugu mass songs", "💥", "Telugu mass power songs"),
+                    music("Allu Arjun Dance Hits", "Energetic beats to release tension", "🔥", "Allu Arjun Telugu dance hits"),
+                    music("Rowdy Anthem Mix", "Telugu action & attitude songs", "🎸", "Telugu rowdy action songs"));
+            case "STRESSED", "ANXIOUS", "OVERWHELMED" -> Arrays.asList(
+                    music("Stress Relief Telugu", "Calming Telugu melodies for peace", "🌿", "stress relief telugu"),
+                    music("Carnatic Calm — Ragas", "Classical Telugu music for inner peace", "🧘", "Telugu carnatic ragas calm"),
+                    music("Ninna Ninna — Lullabies & Soft Songs", "Gentle Telugu songs to ease your mind", "🌸", "Telugu soft lullaby calm songs"));
+            case "TIRED" -> Arrays.asList(
+                    music("Mellaga Mellaga — Slow Melodies", "Slow, soothing Telugu songs", "😴", "Telugu slow soothing melodies"),
+                    music("Morning Raga Telugu", "Soft morning Telugu classical music", "🌅", "Telugu morning raga soft"),
+                    music("Acoustic Telugu Covers", "Gentle acoustic versions of Telugu hits", "☕", "Telugu acoustic covers soft"));
+            case "MOTIVATED", "CONFIDENT" -> Arrays.asList(
+                    music("Jai Ho — Motivation Hits", "Telugu motivational & inspiring songs", "💪", "Telugu motivational inspiring songs"),
+                    music("Mahesh Babu Power Anthems", "High energy Telugu hero songs", "⚡", "Mahesh Babu Telugu power songs"),
+                    music("Pushpa — Attitude Songs", "Telugu attitude & confidence songs", "😎", "Pushpa Telugu attitude songs"));
+            case "RELAXED", "CALM", "PEACEFUL" -> Arrays.asList(
+                    music("Flute & Veena — Telugu Classical", "Peaceful Telugu instrumental music", "🎵", "Telugu flute veena classical peaceful"),
+                    music("AR Rahman Telugu Melodies", "Soulful, calm Telugu compositions", "☕", "AR Rahman Telugu calm melodies"),
+                    music("Nuvvu Leka Nenu Lenu — Soft Hits", "Gentle Telugu melodies for relaxation", "🌿", "Telugu gentle relaxing melodies"));
+            case "HOPEFUL" -> Arrays.asList(
+                    music("Naa Peru Surya — Inspiring Songs", "Telugu songs full of hope & energy", "🌟", "Telugu inspiring hopeful songs"),
+                    music("New Beginnings — Telugu 2024 Hits", "Fresh Telugu songs for a new chapter", "🌅", "Telugu new songs 2024 hits"),
+                    music("Bheemla Nayak — Uplifting Hits", "Powerful Telugu songs to lift your spirit", "✨", "Telugu uplifting powerful songs"));
+            case "SAD", "INSECURE" -> Arrays.asList(
+                    music("Nee Jathaga Nenundali", "Telugu songs about self-worth & love", "💜", "Telugu self love songs"),
+                    music("Geetha Govindam Melodies", "Sweet, comforting Telugu love songs", "🌸", "Geetha Govindam Telugu songs"),
+                    music("Manasantha Nuvve — Comfort Songs", "Warm Telugu songs for the heart", "🌿", "Telugu comfort warm songs"));
+            default -> Arrays.asList(
+                    music("Top Telugu Hits 2024", "Most popular Telugu songs right now", "🎵", "Telugu top hits 2024"),
+                    music("SPB Golden Hits", "Timeless classics by SP Balasubrahmanyam", "🎶", "SPB Telugu golden hits"),
+                    music("Sid Sriram Telugu Melodies", "Soulful modern Telugu songs", "😊", "Sid Sriram Telugu songs"));
         };
-        String langLabel = switch (lang) {
-            case "telugu"  -> " 🇮🇳 Telugu";
-            case "hindi"   -> " 🇮🇳 Hindi";
-            case "bts"     -> " 💜 BTS";
-            case "private" -> " 🔒 Private";
-            default        -> "";
+
+        // Hindi-specific titles
+        if (isHindi) return switch (mood) {
+            case "HAPPY", "EXCITED" -> Arrays.asList(
+                    music("Bollywood Party Hits", "High energy Hindi dance songs", "🎉", "Hindi Bollywood party hits"),
+                    music("Badshah & Yo Yo Honey Singh", "Top Hindi rap & party tracks", "💃", "Badshah Honey Singh Hindi hits"),
+                    music("Arijit Singh Feel Good", "Upbeat Hindi melodies", "🎵", "Arijit Singh happy Hindi songs"));
+            case "SAD", "DISAPPOINTED" -> Arrays.asList(
+                    music("Arijit Singh Sad Songs", "Heart-touching Hindi emotional tracks", "💔", "Arijit Singh sad Hindi songs"),
+                    music("Tum Hi Ho — Breakup Playlist", "Hindi songs for a heavy heart", "🌧️", "Hindi breakup sad songs"),
+                    music("Lata Mangeshkar Classics", "Timeless emotional Hindi melodies", "🎶", "Lata Mangeshkar Hindi classics"));
+            case "STRESSED", "ANXIOUS", "OVERWHELMED" -> Arrays.asList(
+                    music("Stress Relief Hindi", "Calming Hindi melodies for peace", "🌿", "stress relief hindi songs"),
+                    music("Rahat Fateh Ali Khan Sufi", "Soulful Sufi music to calm the mind", "🧘", "Rahat Fateh Ali Khan Sufi"),
+                    music("Shankar Ehsaan Loy Calm", "Peaceful Hindi compositions", "🌸", "Shankar Ehsaan Loy calm Hindi"));
+            case "MOTIVATED", "CONFIDENT" -> Arrays.asList(
+                    music("Kar Har Maidan Fateh", "Hindi motivational anthems", "💪", "Hindi motivational songs Kar Har Maidan"),
+                    music("Ranveer Singh Power Songs", "High energy Bollywood hits", "⚡", "Ranveer Singh Bollywood power songs"),
+                    music("Dil Bechara — Inspiring Hits", "Uplifting Hindi songs", "😎", "Hindi inspiring uplifting songs"));
+            default -> Arrays.asList(
+                    music("Top Hindi Hits 2024", "Most popular Hindi songs right now", "🎵", "Hindi top hits 2024"),
+                    music("Arijit Singh Best Of", "Soulful Hindi melodies", "🎶", "Arijit Singh best Hindi songs"),
+                    music("Bollywood Chill Mix", "Easy Hindi songs for any mood", "😊", "Bollywood chill mix Hindi"));
         };
+
+        // BTS-specific titles
+        if (isBts) return switch (mood) {
+            case "HAPPY", "EXCITED" -> Arrays.asList(
+                    music("BTS Dynamite & Butter", "BTS upbeat feel-good hits", "💛", "BTS Dynamite Butter"),
+                    music("BTS Permission to Dance", "High energy BTS dance tracks", "💃", "BTS Permission to Dance"),
+                    music("BTS Boy With Luv", "Sweet & happy BTS melodies", "🎵", "BTS Boy With Luv"));
+            case "SAD", "DISAPPOINTED" -> Arrays.asList(
+                    music("BTS Spring Day", "BTS emotional & healing songs", "💔", "BTS Spring Day emotional"),
+                    music("BTS Magic Shop", "Comforting BTS tracks for hard days", "🌧️", "BTS Magic Shop comfort"),
+                    music("BTS Epiphany & Singularity", "Deep, soulful BTS solos", "🎶", "BTS Epiphany Singularity"));
+            case "MOTIVATED", "CONFIDENT" -> Arrays.asList(
+                    music("BTS Not Today & Fire", "BTS power & motivation anthems", "💪", "BTS Not Today Fire motivation"),
+                    music("BTS ON & Black Swan", "Intense, powerful BTS tracks", "⚡", "BTS ON Black Swan"),
+                    music("BTS Mic Drop", "BTS attitude & confidence songs", "😎", "BTS Mic Drop"));
+            case "RELAXED", "CALM", "PEACEFUL" -> Arrays.asList(
+                    music("BTS Butterfly & 4 O'Clock", "Soft, dreamy BTS melodies", "🌙", "BTS Butterfly 4 O Clock calm"),
+                    music("BTS Sweet Night & Friends", "Gentle BTS acoustic tracks", "☕", "BTS Sweet Night Friends acoustic"),
+                    music("BTS Euphoria", "Beautiful, uplifting BTS melody", "🌸", "BTS Euphoria peaceful"));
+            default -> Arrays.asList(
+                    music("BTS Greatest Hits", "The best of BTS all time", "💜", "BTS greatest hits"),
+                    music("BTS Map of the Soul", "Soulful BTS album tracks", "🎵", "BTS Map of the Soul"),
+                    music("BTS Love Yourself", "BTS self-love & empowerment songs", "✨", "BTS Love Yourself"));
+        };
+
+        // Default (English or private)
+        return switch (mood) {
+            case "HAPPY", "EXCITED" -> Arrays.asList(
+                    music("Happy Vibes Playlist", "Upbeat songs to match your energy", "🎵", prefix + "happy vibes playlist"),
+                    music("Feel Good Hits", "Chart-topping feel-good tracks", "🎶", prefix + "feel good hits"),
+                    music("Dance Party Mix", "Get up and move to the beat", "💃", prefix + "dance party mix"));
+            case "SAD", "DISAPPOINTED" -> Arrays.asList(
+                    music("Healing Melodies", "Gentle songs for the soul", "🎵", prefix + "healing sad songs"),
+                    music("Comfort Songs", "Songs that feel like a warm hug", "🎶", prefix + "comfort emotional songs"),
+                    music("Rainy Day Playlist", "Soft music for quiet moments", "🌧️", prefix + "rainy day acoustic"));
+            case "STRESSED", "ANXIOUS", "OVERWHELMED" -> Arrays.asList(
+                    music("Calm & Relax", "Soothing sounds to ease your mind", "🎵", prefix + "calm relax stress relief"),
+                    music("Meditation Music", "Deep focus and inner peace", "🧘", prefix + "meditation peaceful music"),
+                    music("Nature Sounds", "Pure calm", "🌿", prefix + "nature sounds relaxing"));
+            case "MOTIVATED", "CONFIDENT" -> Arrays.asList(
+                    music("Power Anthems", "Songs that make you unstoppable", "💪", prefix + "power motivation anthems"),
+                    music("Workout Motivation", "High-energy tracks to power you up", "⚡", prefix + "workout motivation"),
+                    music("Boss Mode", "Music for when you mean business", "😎", prefix + "boss mode focus playlist"));
+            case "RELAXED", "CALM", "PEACEFUL" -> Arrays.asList(
+                    music("Ambient Chill", "Soft ambient sounds for deep relaxation", "🎵", prefix + "ambient chill relaxing"),
+                    music("Jazz & Coffee", "Smooth jazz for a peaceful afternoon", "☕", prefix + "jazz coffee smooth"),
+                    music("Spa & Wellness", "Tranquil sounds for mind and body", "🛁", prefix + "spa wellness music"));
+            default -> Arrays.asList(
+                    music("Chill Lofi Beats", "Easy background music for any mood", "🎵", prefix + "lofi chill beats"),
+                    music("Top Hits 2024", "The most popular tracks right now", "🎶", prefix + "top hits 2024"),
+                    music("Feel Good Mix", "A little bit of everything good", "😊", prefix + "feel good mix"));
+        };
+    }
 
         return switch (mood) {
             case "HAPPY", "EXCITED" -> Arrays.asList(
