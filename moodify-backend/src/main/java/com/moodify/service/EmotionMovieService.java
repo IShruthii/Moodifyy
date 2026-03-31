@@ -113,29 +113,28 @@ public class EmotionMovieService {
         return map;
     }
 
-    private static final Map<String, String> STRATEGY_LABELS = Map.of(
-        "REPAIR",     "To improve your mood 💙",
-        "AMPLIFY",    "To amplify your mood ✨",
-        "MATCH",      "Based on your mood 🎭",
-        "CALM",       "To calm you down 🌿",
-        "ESCAPE",     "For a mood escape 🚀",
-        "STIMULATE",  "To beat the boredom 🎯",
-        "CONNECTION", "For connection & warmth 🤗",
-        "INSPIRE",    "To inspire you 🌟",
-        "EASY",       "Easy watch for tired days 😌",
-        "GENTLE",     "Gentle & healing 💜",
-        "CLASSIC",    "Classic nostalgia 🎞️",
-        "AMPLIFY",    "Ride the wave ✨",
-        "CONTROLLED", "Controlled tension 🔍",
-        "RELEASE",    "Release the pressure 💥",
-        "DISCOVER",   "Discover something new 🔎",
-        "COMFORT",    "Comfort watch 🤗",
-        "HOPEFUL",    "Something hopeful 🌅",
-        "MAINTAIN",   "Stay in the zone ☕",
-        "DEEPEN",     "Deepen the calm 📚",
-        "CLARITY",    "Find some clarity 💡",
-        "LIGHT",      "Light & easy 🌸",
-        "DISTRACT",   "Healthy distraction 🎮"
+    private static final Map<String, String> STRATEGY_LABELS = Map.ofEntries(
+        Map.entry("REPAIR",     "To improve your mood 💙"),
+        Map.entry("AMPLIFY",    "To amplify your mood ✨"),
+        Map.entry("MATCH",      "Based on your mood 🎭"),
+        Map.entry("CALM",       "To calm you down 🌿"),
+        Map.entry("ESCAPE",     "For a mood escape 🚀"),
+        Map.entry("STIMULATE",  "To beat the boredom 🎯"),
+        Map.entry("CONNECTION", "For connection & warmth 🤗"),
+        Map.entry("INSPIRE",    "To inspire you 🌟"),
+        Map.entry("EASY",       "Easy watch for tired days 😌"),
+        Map.entry("GENTLE",     "Gentle & healing 💜"),
+        Map.entry("CLASSIC",    "Classic nostalgia 🎞️"),
+        Map.entry("CONTROLLED", "Controlled tension 🔍"),
+        Map.entry("RELEASE",    "Release the pressure 💥"),
+        Map.entry("DISCOVER",   "Discover something new 🔎"),
+        Map.entry("COMFORT",    "Comfort watch 🤗"),
+        Map.entry("HOPEFUL",    "Something hopeful 🌅"),
+        Map.entry("MAINTAIN",   "Stay in the zone ☕"),
+        Map.entry("DEEPEN",     "Deepen the calm 📚"),
+        Map.entry("CLARITY",    "Find some clarity 💡"),
+        Map.entry("LIGHT",      "Light & easy 🌸"),
+        Map.entry("DISTRACT",   "Healthy distraction 🎮")
     );
 
     public List<MovieRecommendationResponse> getMovieRecommendations(String emotion) {
