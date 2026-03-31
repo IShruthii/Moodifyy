@@ -30,6 +30,9 @@ public class UserPreference {
     @Column(name = "daily_reminder_time")
     private String dailyReminderTime = "09:00";
 
+    @Column(name = "music_language")
+    private String musicLanguage = "english";
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -66,6 +69,9 @@ public class UserPreference {
 
     public String getDailyReminderTime() { return dailyReminderTime; }
     public void setDailyReminderTime(String dailyReminderTime) { this.dailyReminderTime = dailyReminderTime; }
+
+    public String getMusicLanguage() { return musicLanguage; }
+    public void setMusicLanguage(String musicLanguage) { this.musicLanguage = musicLanguage; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }

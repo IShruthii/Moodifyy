@@ -27,15 +27,16 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public RecommendationResponse getRecommendations(String mood) {
+    public RecommendationResponse getRecommendations(String mood, String musicLanguage) {
         MoodData.MoodInfo moodInfo = MoodData.getMoodInfo(mood);
         String m = mood.toUpperCase();
+        String lang = musicLanguage != null ? musicLanguage.toLowerCase() : "english";
 
         RecommendationResponse response = new RecommendationResponse();
         response.setMood(m);
         response.setMoodEmoji(moodInfo.getEmoji());
         response.setMessage(buildMessage(m, moodInfo));
-        response.setMusic(buildMusic(m));
+        response.setMusic(buildMusic(m, lang));
         response.setMovies(buildMovies(m));
         response.setPlaces(buildPlaces(m));
         response.setFood(buildFood(m));
@@ -144,14 +145,67 @@ public class RecommendationServiceImpl implements RecommendationService {
                 Arrays.asList(new ActionLink("Play Now", path, "game")));
     }
 
-    // ── MUSIC ─────────────────────────────────────────────────────────────────
+    private List<RecommendationItem> buildMusic(String mood, String lang) {
+        // Language-specific prefix for search queries
+        String prefix = switch (lang) {
+            case "telugu" -> "Telugu ";
+            case "hindi"  -> "Hindi ";
+            case "bts"    -> "BTS ";
+            case "private" -> "private album ";
+            default       -> "";
+        };
 
-    private List<RecommendationItem> buildMusic(String mood) {
         return switch (mood) {
             case "HAPPY", "EXCITED" -> Arrays.asList(
-                    music("Happy Vibes Playlist", "Upbeat songs to match your energy", "🎵", "happy vibes playlist"),
-                    music("Feel Good Hits", "Chart-topping feel-good tracks", "🎶", "feel good hits 2024"),
-                    music("Dance Party Mix", "Get up and move to the beat", "💃", "dance party mix"));
+                    music("Happy Vibes", "Upbeat songs to match your energy", "🎵", prefix + "happy vibes playlist"),
+                    music("Feel Good Hits", "Chart-topping feel-good tracks", "🎶", prefix + "feel good hits"),
+                    music("Dance Party Mix", "Get up and move to the beat", "💃", prefix + "dance party mix"));
+            case "SAD", "DISAPPOINTED" -> Arrays.asList(
+                    music("Healing Melodies", "Gentle songs for the soul", "🎵", prefix + "healing sad songs"),
+                    music("Comfort Songs", "Songs that feel like a warm hug", "🎶", prefix + "comfort emotional songs"),
+                    music("Rainy Day Playlist", "Soft music for quiet moments", "🌧️", prefix + "rainy day acoustic"));
+            case "LONELY" -> Arrays.asList(
+                    music("You Are Not Alone", "Songs that remind you someone cares", "🎵", prefix + "you are not alone songs"),
+                    music("Warm Acoustic", "Intimate acoustic tracks", "🎶", prefix + "warm acoustic covers"),
+                    music("Late Night Feelings", "Honest songs for quiet nights", "🌙", prefix + "late night feelings"));
+            case "ANGRY", "FRUSTRATED" -> Arrays.asList(
+                    music("Release & Let Go", "Channel that energy into music", "🎵", prefix + "release anger music"),
+                    music("Power Anthems", "Powerful tracks to let it all out", "🎸", prefix + "power anthems"),
+                    music("High Energy Mix", "High-energy beats to burn it off", "💥", prefix + "high energy workout mix"));
+            case "STRESSED", "ANXIOUS", "OVERWHELMED" -> Arrays.asList(
+                    music("Calm & Relax", "Soothing sounds to ease your mind", "🎵", prefix + "calm relax stress relief"),
+                    music("Meditation Music", "Deep focus and inner peace", "🧘", prefix + "meditation peaceful music"),
+                    music("Nature Sounds", "Pure calm", "🌿", prefix + "nature sounds relaxing"));
+            case "TIRED" -> Arrays.asList(
+                    music("Gentle Wake-Up", "Soft music to ease you into the day", "🎵", prefix + "gentle morning music"),
+                    music("Chill Lofi Beats", "Low-energy background music", "☕", prefix + "lofi chill beats"),
+                    music("Acoustic Mornings", "Warm acoustic to start slow", "🌅", prefix + "acoustic morning playlist"));
+            case "BORED" -> Arrays.asList(
+                    music("Discover New Tracks", "Fresh tracks you haven't heard yet", "🎵", prefix + "new music 2024"),
+                    music("World Music Mix", "Explore sounds from around the globe", "🌍", prefix + "world music mix"),
+                    music("Indie Gems", "Hidden gems to spark curiosity", "💎", prefix + "indie pop gems"));
+            case "MOTIVATED", "CONFIDENT" -> Arrays.asList(
+                    music("Power Anthems", "Songs that make you unstoppable", "💪", prefix + "power motivation anthems"),
+                    music("Workout Motivation", "High-energy tracks to power you up", "⚡", prefix + "workout motivation"),
+                    music("Boss Mode", "Music for when you mean business", "😎", prefix + "boss mode focus playlist"));
+            case "RELAXED", "CALM", "PEACEFUL" -> Arrays.asList(
+                    music("Ambient Chill", "Soft ambient sounds for deep relaxation", "🎵", prefix + "ambient chill relaxing"),
+                    music("Jazz & Coffee", "Smooth jazz for a peaceful afternoon", "☕", prefix + "jazz coffee smooth"),
+                    music("Spa & Wellness", "Tranquil sounds for mind and body", "🛁", prefix + "spa wellness music"));
+            case "HOPEFUL" -> Arrays.asList(
+                    music("Uplifting Anthems", "Songs that fill you with hope", "🌟", prefix + "uplifting hopeful songs"),
+                    music("Inspirational Hits", "Music that reminds you anything is possible", "✨", prefix + "inspirational hits"),
+                    music("New Beginnings", "Fresh starts deserve fresh sounds", "🌅", prefix + "new beginnings music"));
+            case "INSECURE" -> Arrays.asList(
+                    music("Self-Love Playlist", "Songs that remind you of your worth", "💜", prefix + "self love playlist"),
+                    music("Empowerment Anthems", "Music to build you back up", "🌸", prefix + "empowerment anthems"),
+                    music("Gentle Affirmations", "Soft music with positive energy", "🌿", prefix + "gentle affirmation music"));
+            default -> Arrays.asList(
+                    music("Chill Lofi Beats", "Easy background music for any mood", "🎵", prefix + "lofi chill beats"),
+                    music("Top Hits", "The most popular tracks right now", "🎶", prefix + "top hits 2024"),
+                    music("Feel Good Mix", "A little bit of everything good", "😊", prefix + "feel good mix"));
+        };
+    }
             case "SAD", "DISAPPOINTED" -> Arrays.asList(
                     music("Healing Melodies", "Gentle songs for the soul", "🎵", "healing melodies sad"),
                     music("Comfort Songs", "Songs that feel like a warm hug", "🎶", "comfort songs emotional"),

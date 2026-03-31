@@ -43,6 +43,7 @@ public class PreferenceController {
         dto.setTheme(p.getTheme());
         dto.setNotificationEnabled(p.isNotificationEnabled());
         dto.setDailyReminderTime(p.getDailyReminderTime());
+        dto.setMusicLanguage(p.getMusicLanguage());
         return dto;
     }
 }

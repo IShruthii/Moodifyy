@@ -17,6 +17,7 @@ export default function ProfilePage() {
     theme: 'soft_purple',
     notificationEnabled: true,
     dailyReminderTime: '09:00',
+    musicLanguage: 'english',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -33,6 +34,7 @@ export default function ProfilePage() {
           theme: pref.theme || 'soft_purple',
           notificationEnabled: pref.notificationEnabled ?? true,
           dailyReminderTime: pref.dailyReminderTime || '09:00',
+          musicLanguage: pref.musicLanguage || 'english',
         })
         changeTheme(pref.theme || 'soft_purple')
       })
@@ -131,6 +133,32 @@ export default function ProfilePage() {
                 />
               </div>
             )}
+          </div>
+
+          {/* Music Language */}
+          <div className="profile-section glass">
+            <h2 className="profile-section-title">🎵 Music Language</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
+              Pick the language of songs you love most
+            </p>
+            <div className="music-lang-grid">
+              {[
+                { key: 'telugu',  label: 'Telugu',  emoji: '🎶' },
+                { key: 'hindi',   label: 'Hindi',   emoji: '🎵' },
+                { key: 'english', label: 'English', emoji: '🎸' },
+                { key: 'bts',     label: 'BTS / K-Pop', emoji: '💜' },
+                { key: 'private', label: 'Private Album', emoji: '🔒' },
+              ].map(lang => (
+                <button
+                  key={lang.key}
+                  className={`music-lang-btn ${form.musicLanguage === lang.key ? 'selected' : ''}`}
+                  onClick={() => setForm({ ...form, musicLanguage: lang.key })}
+                >
+                  <span>{lang.emoji}</span>
+                  <span>{lang.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Save Button */}

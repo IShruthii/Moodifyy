@@ -42,6 +42,7 @@ public class PreferenceServiceImpl implements PreferenceService {
         if (request.getTheme() != null) preference.setTheme(request.getTheme());
         preference.setNotificationEnabled(request.isNotificationEnabled());
         if (request.getDailyReminderTime() != null) preference.setDailyReminderTime(request.getDailyReminderTime());
+        if (request.getMusicLanguage() != null) preference.setMusicLanguage(request.getMusicLanguage());
 
         return preferenceRepository.save(preference);
     }

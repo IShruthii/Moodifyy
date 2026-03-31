@@ -125,3 +125,45 @@
   .profile-header { padding: 20px; }
   .profile-section { padding: 18px; }
 }
+
+/* Music Language Selector */
+.music-lang-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.music-lang-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-family);
+  transition: all 0.2s ease;
+}
+
+.music-lang-btn span:first-child { font-size: 22px; }
+
+.music-lang-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+}
+
+.music-lang-btn.selected {
+  border-color: var(--accent-purple);
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+}
+
+@media (max-width: 480px) {
+  .music-lang-grid { grid-template-columns: repeat(2, 1fr); }
+}

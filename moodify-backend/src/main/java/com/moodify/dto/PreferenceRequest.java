@@ -7,6 +7,7 @@ public class PreferenceRequest {
     private String theme;
     private boolean notificationEnabled;
     private String dailyReminderTime;
+    private String musicLanguage;
 
     public PreferenceRequest() {}
 
@@ -24,4 +25,7 @@ public class PreferenceRequest {
 
     public String getDailyReminderTime() { return dailyReminderTime; }
     public void setDailyReminderTime(String dailyReminderTime) { this.dailyReminderTime = dailyReminderTime; }
+
+    public String getMusicLanguage() { return musicLanguage; }
+    public void setMusicLanguage(String musicLanguage) { this.musicLanguage = musicLanguage; }
 }
