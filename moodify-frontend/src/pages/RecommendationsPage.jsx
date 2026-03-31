@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner'
 import MoodCheckIn from '../components/common/MoodCheckIn'
 import FeedbackModal from '../components/common/FeedbackModal'
 import { getRecommendations } from '../api/recommendationApi'
+import { getMovieRecommendations } from '../api/movieApi'
 import { useMood } from '../context/MoodContext'
 import { useAuth } from '../context/AuthContext'
 import './RecommendationsPage.css'
@@ -34,6 +35,10 @@ export default function RecommendationsPage() {
   const [showFeedback, setShowFeedback] = useState(false)
   const [moodAfter,    setMoodAfter]    = useState(null)
   const timerRef = useRef(null)
+
+  // Movie recommendations (new engine)
+  const [movieRecs, setMovieRecs] = useState([])
+  const [moviesLoading, setMoviesLoading] = useState(false)
 
   // My Playlist
   const playlistKey = `moodify_playlist_${user?.id}`
@@ -74,6 +79,13 @@ export default function RecommendationsPage() {
       .then(res => setRecommendations(res.data.data))
       .catch(() => setError('Failed to load recommendations'))
       .finally(() => setLoading(false))
+
+    // Fetch movie recommendations in parallel
+    setMoviesLoading(true)
+    getMovieRecommendations(currentMood.toLowerCase())
+      .then(res => setMovieRecs(res.data.data || []))
+      .catch(() => setMovieRecs([]))
+      .finally(() => setMoviesLoading(false))
   }, [currentMood, navigate])
 
   // Auto check-in timer
@@ -211,16 +223,84 @@ export default function RecommendationsPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="recs-grid">
-          {(tabContent[activeTab] || []).map((item, i) => (
-            <RecommendationCard
-              key={i}
-              item={item}
-              mood={recommendations.mood}
-              type={activeTab}
-            />
-          ))}
-        </div>
+        {activeTab === 'movies' ? (
+          <div className="movies-tab-content">
+            {moviesLoading ? (
+              <div className="movies-skeleton-grid">
+                {[1,2,3,4,5,6].map(i => (
+                  <div key={i} className="movie-skeleton-card">
+                    <div className="skeleton movie-skel-poster" />
+                    <div className="skeleton movie-skel-title" />
+                    <div className="skeleton movie-skel-sub" />
+                  </div>
+                ))}
+              </div>
+            ) : movieRecs.length > 0 ? (
+              movieRecs.map((section, si) => (
+                <div key={si} className="movie-section-block animate-fade-in">
+                  <div className="movie-section-label">
+                    <span>{section.strategyLabel}</span>
+                    <span className="movie-count-badge">{section.movies?.length} films</span>
+                  </div>
+                  <div className="movie-poster-grid">
+                    {(section.movies || []).map((movie, mi) => (
+                      <div key={mi} className="movie-poster-card">
+                        <div className="movie-poster-wrap">
+                          {movie.poster ? (
+                            <img src={movie.poster} alt={movie.title} className="movie-poster-img" loading="lazy" />
+                          ) : (
+                            <div className="movie-poster-fallback">🎬</div>
+                          )}
+                          <div className="movie-rating-pill">⭐ {movie.rating}</div>
+                          {movie.year > 0 && <div className="movie-year-pill">{movie.year}</div>}
+                        </div>
+                        <div className="movie-poster-info">
+                          <h4 className="movie-poster-title">{movie.title}</h4>
+                          <div className="movie-genre-row">
+                            {(movie.genres || []).slice(0, 2).map((g, i) => (
+                              <span key={i} className="movie-genre-chip">{g}</span>
+                            ))}
+                          </div>
+                          {movie.overview && (
+                            <p className="movie-poster-overview">
+                              {movie.overview.slice(0, 80)}{movie.overview.length > 80 ? '...' : ''}
+                            </p>
+                          )}
+                          <div className="movie-ott-buttons">
+                            {(movie.ottPlatforms || []).map((ott, i) => (
+                              <a key={i} href={ott.url} target="_blank" rel="noopener noreferrer"
+                                className={`movie-ott-btn ott-${ott.logo}`}>
+                                {ott.name}
+                              </a>
+                            ))}
+                          </div>
+                          {movie.trailerUrl && (
+                            <a href={movie.trailerUrl} target="_blank" rel="noopener noreferrer"
+                              className="movie-trailer-btn">
+                              ▶ Trailer
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="recs-grid">
+                {(tabContent['movies'] || []).map((item, i) => (
+                  <RecommendationCard key={i} item={item} mood={recommendations.mood} type="movie" />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="recs-grid">
+            {(tabContent[activeTab] || []).map((item, i) => (
+              <RecommendationCard key={i} item={item} mood={recommendations.mood} type={activeTab} />
+            ))}
+          </div>
+        )}
 
         {/* My Playlist — only on Music tab */}
         {activeTab === 'music' && (

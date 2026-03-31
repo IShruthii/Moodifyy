@@ -283,3 +283,187 @@
 @media (max-width: 600px) {
   .my-playlist-item { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── New Movie Tab ───────────────────────────────────────────────────────── */
+.movies-tab-content { display: flex; flex-direction: column; gap: 28px; }
+
+.movie-section-block { display: flex; flex-direction: column; gap: 14px; }
+
+.movie-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.movie-count-badge {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.06);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.movie-poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.movie-poster-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-poster-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124,58,237,0.35);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+}
+
+.movie-poster-wrap {
+  position: relative;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+
+.movie-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.movie-poster-card:hover .movie-poster-img { transform: scale(1.05); }
+
+.movie-poster-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.movie-rating-pill {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  background: rgba(0,0,0,0.82);
+  color: #f59e0b;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.movie-year-pill {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  background: rgba(0,0,0,0.7);
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.movie-poster-info {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.movie-poster-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.movie-genre-row { display: flex; flex-wrap: wrap; gap: 3px; }
+
+.movie-genre-chip {
+  font-size: 9px;
+  font-weight: 600;
+  background: rgba(124,58,237,0.15);
+  color: var(--accent-purple-light);
+  padding: 2px 6px;
+  border-radius: 8px;
+  text-transform: capitalize;
+}
+
+.movie-poster-overview {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.movie-ott-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.movie-ott-btn {
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ott-netflix  { background: rgba(229,9,20,0.15);  border: 1px solid rgba(229,9,20,0.4);  color: #e50914; }
+.ott-prime    { background: rgba(0,168,224,0.15);  border: 1px solid rgba(0,168,224,0.4);  color: #00a8e0; }
+.ott-hotstar  { background: rgba(31,128,224,0.15); border: 1px solid rgba(31,128,224,0.4); color: #1f80e0; }
+
+.movie-ott-btn:hover { opacity: 0.85; filter: brightness(1.2); }
+
+.movie-trailer-btn {
+  display: block;
+  text-align: center;
+  padding: 5px;
+  background: rgba(255,107,53,0.12);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 7px;
+  color: #ff6b35;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.movie-trailer-btn:hover { background: #ff6b35; color: white; }
+
+/* Skeletons */
+.movies-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.movie-skeleton-card { border-radius: 14px; overflow: hidden; }
+.movie-skel-poster   { height: 220px; border-radius: 10px; }
+.movie-skel-title    { height: 14px; margin-top: 8px; border-radius: 5px; width: 80%; }
+.movie-skel-sub      { height: 10px; margin-top: 5px; border-radius: 5px; width: 50%; }
+
+@media (max-width: 600px) {
+  .movie-poster-grid { grid-template-columns: repeat(2, 1fr); }
+}
