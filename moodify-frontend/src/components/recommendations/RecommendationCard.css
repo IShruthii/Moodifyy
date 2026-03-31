@@ -71,3 +71,68 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
+/* Movie card enhancements */
+.rec-card-movie {
+  position: relative;
+  overflow: hidden;
+}
+
+.movie-vibe-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--vibe-color) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--vibe-color) 40%, transparent);
+  color: var(--vibe-color);
+  width: fit-content;
+  letter-spacing: 0.3px;
+}
+
+.movie-links-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movie-stream-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.movie-links-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.movie-info-row {
+  display: flex;
+  gap: 8px;
+}
+
+.rec-link-sm {
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+}
+
+/* Place card enhancements */
+.place-activity-tag {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-purple-light);
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+}
