@@ -8,25 +8,18 @@ public class ChatResponse {
     private String sessionId;
     private List<String> suggestions;
     private String actionType;
+    private String role;
 
     public ChatResponse() {}
 
-    public ChatResponse(String message, String sessionId, List<String> suggestions, String actionType) {
-        this.message = message;
-        this.sessionId = sessionId;
-        this.suggestions = suggestions;
-        this.actionType = actionType;
-    }
-
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
-
     public String getSessionId() { return sessionId; }
     public void setSessionId(String sessionId) { this.sessionId = sessionId; }
-
     public List<String> getSuggestions() { return suggestions; }
     public void setSuggestions(List<String> suggestions) { this.suggestions = suggestions; }
-
     public String getActionType() { return actionType; }
     public void setActionType(String actionType) { this.actionType = actionType; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
