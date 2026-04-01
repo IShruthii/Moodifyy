@@ -115,11 +115,24 @@ export default function InstallPrompt() {
     const handler = (e) => {
       e.preventDefault()
       setDeferredPrompt(e)
+      // Store globally so RegisterPage can trigger it after signup
+      window.__pwaPrompt = e
+      // Also show after 4s if not triggered by signup
       setTimeout(() => setShow(true), 4000)
     }
     window.addEventListener('beforeinstallprompt', handler)
     window.addEventListener('appinstalled', () => { setInstalled(true); setShow(false) })
-    return () => window.removeEventListener('beforeinstallprompt', handler)
+
+    // Listen for post-signup trigger
+    const onSignup = () => {
+      if (window.__pwaPrompt) setTimeout(() => setShow(true), 1500)
+    }
+    window.addEventListener('moodify:signup', onSignup)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler)
+      window.removeEventListener('moodify:signup', onSignup)
+    }
   }, [])
 
   const handleInstall = async () => {

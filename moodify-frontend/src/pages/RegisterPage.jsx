@@ -42,6 +42,9 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await register(form.name, form.email, form.password, form.gender)
+      // Trigger install prompt after signup
+      sessionStorage.removeItem('pwa_dismissed')
+      window.dispatchEvent(new Event('moodify:signup'))
       navigate('/profile')
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.')
