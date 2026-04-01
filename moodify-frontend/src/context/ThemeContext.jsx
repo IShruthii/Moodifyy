@@ -93,16 +93,45 @@ const THEMES = {
     bg: '#0c0a09',
     bgSecondary: '#1c1917',
   },
+  retro: {
+    name: 'Retro',
+    emoji: '📼',
+    accent: '#f97316',
+    accentLight: '#fb923c',
+    gradient: 'linear-gradient(135deg, #78350f 0%, #f97316 50%, #fbbf24 100%)',
+    bg: '#1c1008',
+    bgSecondary: '#2d1a08',
+  },
+  sports: {
+    name: 'Sports',
+    emoji: '🏟️',
+    accent: '#22c55e',
+    accentLight: '#4ade80',
+    gradient: 'linear-gradient(135deg, #15803d 0%, #22c55e 50%, #86efac 100%)',
+    bg: '#021a0a',
+    bgSecondary: '#042d12',
+  },
+  gym: {
+    name: 'Gym',
+    emoji: '💪',
+    accent: '#ef4444',
+    accentLight: '#f87171',
+    gradient: 'linear-gradient(135deg, #7f1d1d 0%, #ef4444 50%, #f97316 100%)',
+    bg: '#0a0a0a',
+    bgSecondary: '#1a1a1a',
+  },
 }
 
 export function ThemeProvider({ children }) {
   const [themeName, setThemeName] = useState(() => {
-    // initialise synchronously so first paint already has correct theme
     return localStorage.getItem('moodify_theme') || 'soft_purple'
+  })
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('moodify_dark_mode')
+    return saved === null ? true : saved === 'true'
   })
   const theme = THEMES[themeName] || THEMES.soft_purple
 
-  // Apply CSS vars every time theme changes
   useEffect(() => {
     const root = document.documentElement
     root.style.setProperty('--accent-purple', theme.accent)
@@ -112,20 +141,24 @@ export function ThemeProvider({ children }) {
     root.style.setProperty('--gradient-card', `linear-gradient(135deg, ${theme.accent}26 0%, ${theme.accentLight}1a 100%)`)
     root.style.setProperty('--border-glow', `${theme.accent}66`)
     root.style.setProperty('--shadow-glow', `0 0 30px ${theme.accent}4d`)
-    root.style.setProperty('--bg-primary', theme.bg)
-    root.style.setProperty('--bg-secondary', theme.bgSecondary)
+    root.style.setProperty('--bg-primary', darkMode ? theme.bg : '#f8f5ff')
+    root.style.setProperty('--bg-secondary', darkMode ? theme.bgSecondary : '#ffffff')
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.accent)
-  }, [theme])
+    document.body.setAttribute('data-theme', themeName)
+    document.body.setAttribute('data-mode', darkMode ? 'dark' : 'light')
+  }, [theme, themeName, darkMode])
 
   const changeTheme = (name) => {
-    if (THEMES[name]) {
-      setThemeName(name)
-      localStorage.setItem('moodify_theme', name)
-    }
+    if (THEMES[name]) { setThemeName(name); localStorage.setItem('moodify_theme', name) }
+  }
+  const toggleDarkMode = (val) => {
+    const next = val !== undefined ? val : !darkMode
+    setDarkMode(next)
+    localStorage.setItem('moodify_dark_mode', String(next))
   }
 
   return (
-    <ThemeContext.Provider value={{ themeName, theme, themes: THEMES, changeTheme }}>
+    <ThemeContext.Provider value={{ themeName, theme, themes: THEMES, changeTheme, darkMode, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   )

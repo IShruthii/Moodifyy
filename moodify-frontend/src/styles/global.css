@@ -44,6 +44,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.3s ease;
 }
 
 #root {
@@ -59,7 +60,7 @@ body {
 
 /* Utility classes */
 .glass {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -140,8 +141,10 @@ body {
 
 /* Card */
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   padding: 24px;
   transition: all 0.3s ease;
@@ -150,6 +153,7 @@ body {
 .card:hover {
   border-color: var(--border-glow);
   box-shadow: var(--shadow-glow);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 /* Input */
@@ -245,4 +249,343 @@ body {
 @media (max-width: 768px) {
   .card { padding: 16px; }
   .btn-lg { padding: 12px 22px; font-size: 15px; }
+}
+
+/* ═══════════════════════════════════════════════
+   PER-THEME OVERRIDES — each theme has its own vibe
+   ═══════════════════════════════════════════════ */
+
+/* ── Soft Purple (default) ── */
+[data-theme="soft_purple"] body,
+[data-theme="soft_purple"] {
+  --bg-card: rgba(124, 58, 237, 0.08);
+  --bg-card-hover: rgba(124, 58, 237, 0.14);
+  --border-color: rgba(124, 58, 237, 0.2);
+  --text-primary: #f0eaff;
+  --text-secondary: #b39ddb;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --font-family: 'Inter', sans-serif;
+}
+[data-theme="soft_purple"] .layout {
+  background: radial-gradient(ellipse at top left, #2d1b6930 0%, var(--bg-primary) 60%);
+}
+[data-theme="soft_purple"] .card {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.2);
+}
+
+/* ── Ocean Blue — clean, techy, sharp ── */
+[data-theme="ocean_blue"] {
+  --bg-card: rgba(14, 165, 233, 0.07);
+  --bg-card-hover: rgba(14, 165, 233, 0.13);
+  --border-color: rgba(56, 189, 248, 0.2);
+  --text-primary: #e0f2fe;
+  --text-secondary: #7dd3fc;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-family: 'Courier New', 'Consolas', monospace;
+}
+[data-theme="ocean_blue"] .layout {
+  background: radial-gradient(ellipse at bottom right, #0c4a6e40 0%, var(--bg-primary) 70%);
+}
+[data-theme="ocean_blue"] .card {
+  background: rgba(14, 165, 233, 0.07);
+  border-color: rgba(56, 189, 248, 0.2);
+  border-radius: 8px;
+}
+[data-theme="ocean_blue"] .glass {
+  border-radius: 8px;
+  border-color: rgba(56, 189, 248, 0.15);
+}
+
+/* ── Rose Gold — warm, elegant, romantic ── */
+[data-theme="rose_gold"] {
+  --bg-card: rgba(244, 63, 94, 0.08);
+  --bg-card-hover: rgba(244, 63, 94, 0.14);
+  --border-color: rgba(251, 113, 133, 0.25);
+  --text-primary: #fff1f2;
+  --text-secondary: #fda4af;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --font-family: 'Georgia', 'Times New Roman', serif;
+}
+[data-theme="rose_gold"] .layout {
+  background: radial-gradient(ellipse at top right, #f43f5e25 0%, var(--bg-primary) 65%);
+}
+[data-theme="rose_gold"] .card {
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(251, 113, 133, 0.25);
+  border-radius: 28px;
+}
+[data-theme="rose_gold"] .glass {
+  border-radius: 28px;
+}
+
+/* ── Forest Green — calm, natural, earthy ── */
+[data-theme="forest_green"] {
+  --bg-card: rgba(16, 185, 129, 0.07);
+  --bg-card-hover: rgba(16, 185, 129, 0.13);
+  --border-color: rgba(52, 211, 153, 0.2);
+  --text-primary: #ecfdf5;
+  --text-secondary: #6ee7b7;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --font-family: 'Trebuchet MS', 'Verdana', sans-serif;
+}
+[data-theme="forest_green"] .layout {
+  background: radial-gradient(ellipse at center, #05301a30 0%, var(--bg-primary) 70%);
+}
+[data-theme="forest_green"] .card {
+  background: rgba(16, 185, 129, 0.07);
+  border-color: rgba(52, 211, 153, 0.2);
+  border-radius: 4px;
+  border-left: 3px solid #10b981;
+}
+[data-theme="forest_green"] .glass {
+  border-radius: 4px;
+}
+
+/* ── Barbie — bold, pink, playful ── */
+[data-theme="barbie"] {
+  --bg-card: rgba(255, 31, 142, 0.1);
+  --bg-card-hover: rgba(255, 31, 142, 0.18);
+  --border-color: rgba(255, 110, 180, 0.3);
+  --text-primary: #fff0f8;
+  --text-secondary: #ff9de2;
+  --radius-md: 24px;
+  --radius-lg: 36px;
+  --font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+}
+[data-theme="barbie"] .layout {
+  background: radial-gradient(ellipse at top, #ff1f8e30 0%, var(--bg-primary) 60%),
+              radial-gradient(ellipse at bottom, #ff9de230 0%, transparent 60%);
+}
+[data-theme="barbie"] .card {
+  background: rgba(255, 31, 142, 0.1);
+  border-color: rgba(255, 110, 180, 0.3);
+  border-radius: 36px;
+  box-shadow: 0 4px 20px rgba(255, 31, 142, 0.15);
+}
+[data-theme="barbie"] .glass {
+  border-radius: 36px;
+  background: rgba(255, 31, 142, 0.08);
+}
+
+/* ── Anime — vibrant, dreamy, kawaii ── */
+[data-theme="anime"] {
+  --bg-card: rgba(232, 121, 249, 0.08);
+  --bg-card-hover: rgba(232, 121, 249, 0.15);
+  --border-color: rgba(240, 171, 252, 0.2);
+  --text-primary: #fdf4ff;
+  --text-secondary: #e879f9;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --font-family: 'Segoe UI', 'Hiragino Sans', sans-serif;
+}
+[data-theme="anime"] .layout {
+  background: radial-gradient(ellipse at top left, #e879f920 0%, var(--bg-primary) 50%),
+              radial-gradient(ellipse at bottom right, #38bdf820 0%, transparent 50%);
+}
+[data-theme="anime"] .card {
+  background: rgba(232, 121, 249, 0.08);
+  border-color: rgba(240, 171, 252, 0.2);
+  border-radius: 26px;
+}
+[data-theme="anime"] .glass {
+  border-radius: 26px;
+  background: rgba(232, 121, 249, 0.06);
+}
+
+/* ── Pokémon — energetic, bold, yellow/red ── */
+[data-theme="pokemon"] {
+  --bg-card: rgba(250, 204, 21, 0.08);
+  --bg-card-hover: rgba(250, 204, 21, 0.15);
+  --border-color: rgba(253, 224, 71, 0.25);
+  --text-primary: #fefce8;
+  --text-secondary: #fde047;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --font-family: 'Impact', 'Arial Black', sans-serif;
+}
+[data-theme="pokemon"] .layout {
+  background: radial-gradient(ellipse at top, #facc1520 0%, var(--bg-primary) 55%),
+              radial-gradient(ellipse at bottom, #ef444420 0%, transparent 55%);
+}
+[data-theme="pokemon"] .card {
+  background: rgba(250, 204, 21, 0.08);
+  border-color: rgba(253, 224, 71, 0.25);
+  border-radius: 12px;
+  border-top: 2px solid #facc15;
+}
+[data-theme="pokemon"] .glass {
+  border-radius: 12px;
+}
+
+/* ── Sun & Moon — mystical, deep, cosmic ── */
+[data-theme="sun_moon"] {
+  --bg-card: rgba(245, 158, 11, 0.07);
+  --bg-card-hover: rgba(245, 158, 11, 0.13);
+  --border-color: rgba(251, 191, 36, 0.2);
+  --text-primary: #fffbeb;
+  --text-secondary: #fbbf24;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --font-family: 'Palatino Linotype', 'Book Antiqua', serif;
+}
+[data-theme="sun_moon"] .layout {
+  background: radial-gradient(ellipse at top right, #f59e0b20 0%, var(--bg-primary) 50%),
+              radial-gradient(ellipse at bottom left, #7c3aed20 0%, transparent 50%);
+}
+[data-theme="sun_moon"] .card {
+  background: rgba(245, 158, 11, 0.07);
+  border-color: rgba(251, 191, 36, 0.2);
+  border-radius: 20px;
+}
+[data-theme="sun_moon"] .glass {
+  border-radius: 20px;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+/* ── Stars — minimal, indigo, celestial ── */
+[data-theme="stars"] {
+  --bg-card: rgba(165, 180, 252, 0.07);
+  --bg-card-hover: rgba(165, 180, 252, 0.12);
+  --border-color: rgba(199, 210, 254, 0.15);
+  --text-primary: #eef2ff;
+  --text-secondary: #a5b4fc;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --font-family: 'Inter', 'Helvetica Neue', sans-serif;
+}
+[data-theme="stars"] .layout {
+  background: radial-gradient(ellipse at center top, #1e1b4b50 0%, var(--bg-primary) 60%);
+}
+[data-theme="stars"] .card {
+  background: rgba(165, 180, 252, 0.07);
+  border-color: rgba(199, 210, 254, 0.15);
+  border-radius: 22px;
+}
+[data-theme="stars"] .glass {
+  border-radius: 22px;
+  background: rgba(165, 180, 252, 0.05);
+}
+
+/* ── Game of Thrones — dark, stone, medieval ── */
+[data-theme="game_of_thrones"] {
+  --bg-card: rgba(180, 83, 9, 0.1);
+  --bg-card-hover: rgba(180, 83, 9, 0.18);
+  --border-color: rgba(217, 119, 6, 0.25);
+  --text-primary: #fef3c7;
+  --text-secondary: #d97706;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --font-family: 'Palatino Linotype', 'Times New Roman', serif;
+}
+[data-theme="game_of_thrones"] .layout {
+  background: radial-gradient(ellipse at top, #b4530920 0%, var(--bg-primary) 60%);
+}
+[data-theme="game_of_thrones"] .card {
+  background: rgba(180, 83, 9, 0.1);
+  border-color: rgba(217, 119, 6, 0.25);
+  border-radius: 2px;
+  border-left: 3px solid #b45309;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+}
+[data-theme="game_of_thrones"] .glass {
+  border-radius: 2px;
+  background: rgba(28, 25, 23, 0.8);
+  border-color: rgba(217, 119, 6, 0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   LIGHT MODE
+   ═══════════════════════════════════════════════ */
+[data-mode="light"] {
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --text-muted: #8888aa;
+  --border-color: rgba(0,0,0,0.1);
+  --bg-card: rgba(255,255,255,0.75);
+  --bg-card-hover: rgba(255,255,255,0.9);
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.1);
+}
+[data-mode="light"] body {
+  background: #f0ecff !important;
+}
+[data-mode="light"] .card {
+  background: rgba(255,255,255,0.75) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  color: #1a1a2e;
+}
+[data-mode="light"] .glass {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+[data-mode="light"] .sidebar {
+  background: rgba(255,255,255,0.85) !important;
+  border-right-color: rgba(0,0,0,0.08) !important;
+}
+[data-mode="light"] .mobile-nav {
+  background: rgba(255,255,255,0.9) !important;
+  border-top-color: rgba(0,0,0,0.08) !important;
+}
+[data-mode="light"] .nav-item { color: #4a4a6a; }
+[data-mode="light"] .nav-item:hover { background: rgba(0,0,0,0.05); color: #1a1a2e; }
+[data-mode="light"] .input {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.12);
+  color: #1a1a2e;
+}
+[data-mode="light"] .input::placeholder { color: #8888aa; }
+[data-mode="light"] .logo-text { filter: none; }
+[data-mode="light"] .theme-bg { opacity: 0.35; }
+
+/* Light mode — profile sections use white with dark text */
+[data-mode="light"] .profile-section {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-mode="light"] .profile-section-title,
+[data-mode="light"] .profile-name,
+[data-mode="light"] .notif-toggle-label { color: #1a1a2e !important; text-shadow: none !important; }
+[data-mode="light"] .profile-email,
+[data-mode="light"] .notif-toggle-sub { color: #4a4a6a !important; }
+[data-mode="light"] .profile-header {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-mode="light"] .theme-option {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  color: #1a1a2e !important;
+}
+[data-mode="light"] .theme-name { color: #1a1a2e !important; text-shadow: none !important; }
+[data-mode="light"] .theme-option:hover { background: rgba(255,255,255,0.95) !important; }
+[data-mode="light"] .music-lang-btn {
+  background: rgba(255,255,255,0.8) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  color: #4a4a6a !important;
+}
+[data-mode="light"] .music-lang-btn.selected { color: #1a1a2e !important; }
+[data-mode="light"] .mode-btn {
+  background: rgba(255,255,255,0.8) !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  color: #4a4a6a !important;
+}
+[data-mode="light"] .mode-btn--active { color: #1a1a2e !important; }
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE — global fixes
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .card { padding: 14px; border-radius: 16px; }
+  .btn-lg { padding: 12px 20px; font-size: 14px; }
+  h1 { font-size: 22px !important; }
+  h2 { font-size: 18px !important; }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 12px; border-radius: 12px; }
+  .input { font-size: 14px; padding: 10px 12px; }
 }

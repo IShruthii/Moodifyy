@@ -4,8 +4,9 @@
   top: 0;
   height: 100vh;
   width: 220px;
-  background: rgba(15, 10, 30, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
@@ -106,8 +107,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(15, 10, 30, 0.97);
-  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding: 8px 0 env(safe-area-inset-bottom, 8px);
   z-index: 100;
@@ -157,3 +159,137 @@
   .sidebar { display: none; }
   .mobile-nav { display: flex; }
 }
+
+/* ═══════════════════════════════════════════════
+   PER-THEME SIDEBAR OVERRIDES
+   ═══════════════════════════════════════════════ */
+
+/* Ocean Blue — sharp, techy sidebar */
+[data-theme="ocean_blue"] .sidebar {
+  background: rgba(10, 22, 40, 0.97);
+  border-right: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 0;
+}
+[data-theme="ocean_blue"] .nav-item.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+}
+[data-theme="ocean_blue"] .nav-item { border-radius: 4px; }
+[data-theme="ocean_blue"] .mobile-nav { background: rgba(10, 22, 40, 0.97); border-top-color: rgba(56, 189, 248, 0.15); }
+
+/* Rose Gold — warm, rounded sidebar */
+[data-theme="rose_gold"] .sidebar {
+  background: rgba(26, 10, 16, 0.97);
+  border-right: 1px solid rgba(251, 113, 133, 0.15);
+}
+[data-theme="rose_gold"] .nav-item.active {
+  background: rgba(244, 63, 94, 0.2);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.3);
+  border-radius: 28px;
+}
+[data-theme="rose_gold"] .nav-item { border-radius: 28px; }
+[data-theme="rose_gold"] .mobile-nav { background: rgba(26, 10, 16, 0.97); border-top-color: rgba(251, 113, 133, 0.15); }
+
+/* Forest Green — flat, earthy sidebar */
+[data-theme="forest_green"] .sidebar {
+  background: rgba(10, 26, 18, 0.97);
+  border-right: 2px solid rgba(52, 211, 153, 0.2);
+}
+[data-theme="forest_green"] .nav-item.active {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.3);
+  border-radius: 2px;
+  border-left: 3px solid #10b981;
+}
+[data-theme="forest_green"] .nav-item { border-radius: 2px; }
+[data-theme="forest_green"] .mobile-nav { background: rgba(10, 26, 18, 0.97); border-top-color: rgba(52, 211, 153, 0.2); }
+
+/* Barbie — bubbly, pink sidebar */
+[data-theme="barbie"] .sidebar {
+  background: rgba(26, 0, 16, 0.97);
+  border-right: 1px solid rgba(255, 110, 180, 0.2);
+}
+[data-theme="barbie"] .nav-item.active {
+  background: rgba(255, 31, 142, 0.2);
+  color: #ff6eb4;
+  border-color: rgba(255, 31, 142, 0.35);
+  border-radius: 36px;
+}
+[data-theme="barbie"] .nav-item { border-radius: 36px; }
+[data-theme="barbie"] .mobile-nav { background: rgba(26, 0, 16, 0.97); border-top-color: rgba(255, 110, 180, 0.2); }
+
+/* Anime — dreamy sidebar */
+[data-theme="anime"] .sidebar {
+  background: rgba(13, 10, 26, 0.97);
+  border-right: 1px solid rgba(240, 171, 252, 0.15);
+}
+[data-theme="anime"] .nav-item.active {
+  background: rgba(232, 121, 249, 0.18);
+  color: #f0abfc;
+  border-color: rgba(232, 121, 249, 0.3);
+  border-radius: 26px;
+}
+[data-theme="anime"] .nav-item { border-radius: 26px; }
+[data-theme="anime"] .mobile-nav { background: rgba(13, 10, 26, 0.97); border-top-color: rgba(240, 171, 252, 0.15); }
+
+/* Pokémon — bold, yellow sidebar */
+[data-theme="pokemon"] .sidebar {
+  background: rgba(15, 10, 0, 0.97);
+  border-right: 2px solid rgba(250, 204, 21, 0.2);
+}
+[data-theme="pokemon"] .nav-item.active {
+  background: rgba(250, 204, 21, 0.15);
+  color: #fde047;
+  border-color: rgba(250, 204, 21, 0.3);
+  border-radius: 8px;
+  border-top: 2px solid #facc15;
+}
+[data-theme="pokemon"] .nav-item { border-radius: 8px; }
+[data-theme="pokemon"] .mobile-nav { background: rgba(15, 10, 0, 0.97); border-top-color: rgba(250, 204, 21, 0.2); }
+
+/* Sun & Moon — mystical sidebar */
+[data-theme="sun_moon"] .sidebar {
+  background: rgba(7, 5, 15, 0.97);
+  border-right: 1px solid rgba(251, 191, 36, 0.15);
+}
+[data-theme="sun_moon"] .nav-item.active {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+  border-radius: 20px;
+}
+[data-theme="sun_moon"] .nav-item { border-radius: 20px; }
+[data-theme="sun_moon"] .mobile-nav { background: rgba(7, 5, 15, 0.97); border-top-color: rgba(251, 191, 36, 0.15); }
+
+/* Stars — minimal, indigo sidebar */
+[data-theme="stars"] .sidebar {
+  background: rgba(3, 7, 18, 0.97);
+  border-right: 1px solid rgba(165, 180, 252, 0.12);
+}
+[data-theme="stars"] .nav-item.active {
+  background: rgba(165, 180, 252, 0.15);
+  color: #c7d2fe;
+  border-color: rgba(165, 180, 252, 0.25);
+  border-radius: 22px;
+}
+[data-theme="stars"] .nav-item { border-radius: 22px; }
+[data-theme="stars"] .mobile-nav { background: rgba(3, 7, 18, 0.97); border-top-color: rgba(165, 180, 252, 0.12); }
+
+/* Game of Thrones — stone, medieval sidebar */
+[data-theme="game_of_thrones"] .sidebar {
+  background: rgba(12, 10, 9, 0.98);
+  border-right: 2px solid rgba(180, 83, 9, 0.3);
+}
+[data-theme="game_of_thrones"] .nav-item.active {
+  background: rgba(180, 83, 9, 0.2);
+  color: #d97706;
+  border-color: rgba(180, 83, 9, 0.4);
+  border-radius: 2px;
+  border-left: 3px solid #b45309;
+}
+[data-theme="game_of_thrones"] .nav-item { border-radius: 2px; }
+[data-theme="game_of_thrones"] .mobile-nav { background: rgba(12, 10, 9, 0.98); border-top-color: rgba(180, 83, 9, 0.3); }

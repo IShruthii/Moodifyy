@@ -9,46 +9,57 @@
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-secondary);
+  color: #ffffff;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   position: relative;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .theme-option:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
 .theme-option.selected {
   border-color: var(--accent-purple);
-  background: rgba(124, 58, 237, 0.1);
-  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  box-shadow: 0 0 16px var(--border-glow);
 }
 
 .theme-preview {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .theme-emoji {
-  font-size: 16px;
+  font-size: 18px;
   filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
 }
 
-.theme-name { flex: 1; text-align: left; }
+.theme-name {
+  flex: 1;
+  text-align: left;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
 
 .theme-check {
-  color: var(--accent-purple-light);
+  color: #ffffff;
   font-weight: 700;
+  font-size: 16px;
 }

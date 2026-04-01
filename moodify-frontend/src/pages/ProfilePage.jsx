@@ -10,7 +10,7 @@ import './ProfilePage.css'
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuth()
-  const { changeTheme } = useTheme()
+  const { changeTheme, darkMode, toggleDarkMode } = useTheme()
   const [form, setForm] = useState({
     displayName: '',
     avatarId: 'avatar_1',
@@ -105,6 +105,27 @@ export default function ProfilePage() {
                 changeTheme(theme)
               }}
             />
+          </div>
+
+          {/* Display Mode */}
+          <div className="profile-section glass">
+            <h2 className="profile-section-title">Display Mode</h2>
+            <div className="mode-toggle-row">
+              <button
+                className={`mode-btn ${darkMode ? '' : 'mode-btn--active'}`}
+                onClick={() => toggleDarkMode(false)}
+              >
+                <span style={{fontSize:22}}>☀️</span>
+                <span>Light</span>
+              </button>
+              <button
+                className={`mode-btn ${darkMode ? 'mode-btn--active' : ''}`}
+                onClick={() => toggleDarkMode(true)}
+              >
+                <span style={{fontSize:22}}>🌙</span>
+                <span>Dark</span>
+              </button>
+            </div>
           </div>
 
           {/* Notifications */}
