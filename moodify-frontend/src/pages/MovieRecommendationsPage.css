@@ -262,6 +262,6 @@
 
 @media (max-width: 600px) {
   .movie-cards-grid { grid-template-columns: repeat(2, 1fr); }
-  .mood-chip-label { display: none; }
-  .mood-chip { padding: 10px 12px; }
+  .mood-chip-label { font-size: 10px; }
+  .mood-chip { padding: 8px 10px; }
 }

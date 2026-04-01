@@ -589,3 +589,46 @@ body {
   .card { padding: 12px; border-radius: 12px; }
   .input { font-size: 14px; padding: 10px 12px; }
 }
+
+/* ═══════════════════════════════════════════════
+   MOBILE PERFORMANCE & FULL CONTENT FIXES
+   ═══════════════════════════════════════════════ */
+
+/* Reduce backdrop-filter on mobile for performance */
+@media (max-width: 768px) {
+  .glass,
+  .sidebar,
+  .mobile-nav,
+  .card,
+  .profile-section,
+  .install-popup,
+  .mobile-more-drawer {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+}
+
+/* Disable heavy animations on mobile */
+@media (max-width: 768px) {
+  .bts-confetti,
+  .bts-laser,
+  .garden-butterfly,
+  .retro-grain,
+  .poke-lightning,
+  .tb-particle { display: none !important; }
+
+  /* Slow down expensive animations */
+  .pokeball { animation-duration: 40s !important; }
+  .retro-cd-disc { animation-duration: 6s !important; }
+  .retro-vinyl { animation-duration: 16s !important; }
+  .bts-army-bomb { animation-duration: 3s !important; }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

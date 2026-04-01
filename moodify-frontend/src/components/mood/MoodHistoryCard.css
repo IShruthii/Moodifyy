@@ -94,5 +94,10 @@
 }
 
 @media (max-width: 480px) {
-  .mhc-right { display: none; }
+  .mhc-right {
+    display: flex;
+    max-width: 120px;
+  }
+  .mhc-note { max-width: 100px; font-size: 11px; }
+  .mhc-energy-label { display: none; }
 }

@@ -445,6 +445,6 @@
   .dash-notif-card { flex-wrap: wrap; }
 }
 @media (max-width: 480px) {
-  .dash-notif-msg { display: none; }
+  .dash-notif-msg { font-size: 11px; max-width: 160px; }
   .dash-notif-card { padding: 14px 16px; }
 }

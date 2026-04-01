@@ -225,7 +225,7 @@
 }
 
 @media (max-width: 480px) {
-  .theme-selector { grid-template-columns: 1fr; }
+  .theme-selector { grid-template-columns: 1fr 1fr; }
   .profile-header { flex-direction: column; text-align: center; }
   .music-lang-grid { grid-template-columns: repeat(2, 1fr); }
 }
