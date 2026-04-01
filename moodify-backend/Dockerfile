@@ -17,6 +17,7 @@ RUN chown -R moodify:moodify /app
 
 USER moodify
 EXPOSE 8080
+EXPOSE 10000
 
 # Inline the startup logic — no external shell script needed
 CMD ["sh", "-c", "\

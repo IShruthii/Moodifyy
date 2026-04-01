@@ -37,3 +37,5 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://moodify-c5f3-kappa.vercel.app
+      - key: PORT
+        value: 10000
