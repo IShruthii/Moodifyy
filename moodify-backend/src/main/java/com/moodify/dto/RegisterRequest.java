@@ -17,13 +17,9 @@ public class RegisterRequest {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
-    public RegisterRequest() {}
+    private String gender; // "male", "female", "other"
 
-    public RegisterRequest(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
+    public RegisterRequest() {}
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -33,4 +29,7 @@ public class RegisterRequest {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 }

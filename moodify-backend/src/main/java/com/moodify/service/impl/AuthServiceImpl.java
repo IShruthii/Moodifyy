@@ -53,6 +53,7 @@ public class AuthServiceImpl implements AuthService {
                 passwordEncoder.encode(request.getPassword()),
                 request.getName()
         );
+        if (request.getGender() != null) user.setGender(request.getGender());
         user = userRepository.save(user);
 
         UserPreference preference = new UserPreference(user);
@@ -61,7 +62,9 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
 
-        return new AuthResponse(token, user.getEmail(), user.getName(), user.getId(), false);
+        AuthResponse resp = new AuthResponse(token, user.getEmail(), user.getName(), user.getId(), false);
+        resp.setGender(user.getGender());
+        return resp;
     }
 
     @Override
@@ -80,6 +83,8 @@ public class AuthServiceImpl implements AuthService {
                 .map(p -> p.getDisplayName() != null && !p.getDisplayName().isEmpty())
                 .orElse(false);
 
-        return new AuthResponse(token, user.getEmail(), user.getName(), user.getId(), profileSetup);
+        AuthResponse loginResp = new AuthResponse(token, user.getEmail(), user.getName(), user.getId(), profileSetup);
+        loginResp.setGender(user.getGender());
+        return loginResp;
     }
 }

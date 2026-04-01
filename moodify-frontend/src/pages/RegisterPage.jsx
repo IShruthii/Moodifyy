@@ -23,7 +23,7 @@ function GoogleComingSoonModal({ onClose }) {
 export default function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '', gender: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showGoogleModal, setShowGoogleModal] = useState(false)
@@ -41,7 +41,7 @@ export default function RegisterPage() {
     }
     setLoading(true)
     try {
-      await register(form.name, form.email, form.password)
+      await register(form.name, form.email, form.password, form.gender)
       navigate('/profile')
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.')
@@ -101,6 +101,27 @@ export default function RegisterPage() {
                 required
                 autoComplete="name"
               />
+            </div>
+
+            <div className="form-group">
+              <label className="label">I am a...</label>
+              <div className="gender-picker">
+                {[
+                  { val: 'female', label: 'Girl', emoji: '👩' },
+                  { val: 'male',   label: 'Boy',  emoji: '👨' },
+                  { val: 'other',  label: 'Other', emoji: '🌈' },
+                ].map(g => (
+                  <button
+                    key={g.val}
+                    type="button"
+                    className={`gender-btn ${form.gender === g.val ? 'selected' : ''}`}
+                    onClick={() => setForm({ ...form, gender: g.val })}
+                  >
+                    <span style={{fontSize:24}}>{g.emoji}</span>
+                    <span>{g.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="form-group">

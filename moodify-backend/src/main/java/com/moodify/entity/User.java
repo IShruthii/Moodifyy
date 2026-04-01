@@ -31,6 +31,9 @@ public class User {
     @Column(name = "is_active")
     private boolean active = true;
 
+    @Column(name = "gender")
+    private String gender; // "male", "female", "other"
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserPreference preference;
 
@@ -79,6 +82,9 @@ public class User {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
     public UserPreference getPreference() { return preference; }
     public void setPreference(UserPreference preference) { this.preference = preference; }
