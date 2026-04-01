@@ -23,6 +23,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [showPushPrompt, setShowPushPrompt] = useState(false)
 
   useEffect(() => {
     getPreference()
@@ -51,6 +52,8 @@ export default function ProfilePage() {
       updateUser({ name: form.displayName, profileSetup: true, avatarId: form.avatarId })
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
+      // Ask to push to GitHub after saving
+      setTimeout(() => setShowPushPrompt(true), 1000)
     } catch (err) {
       setSaveError(err.response?.data?.message || 'Failed to save. Please try again.')
     } finally {
@@ -198,6 +201,32 @@ export default function ProfilePage() {
         </div>
       </div>
       <ChatbotFAB />
+
+      {/* Push to GitHub prompt */}
+      {showPushPrompt && (
+        <div className="push-backdrop" onClick={() => setShowPushPrompt(false)}>
+          <div className="push-modal" onClick={e => e.stopPropagation()}
+            style={{ '--p-gradient': theme.gradient, '--p-accent': theme.accent }}>
+            <div className="push-icon">🚀</div>
+            <div className="push-title">Push to GitHub?</div>
+            <div className="push-sub">Your profile preferences are saved. Want to push the latest changes to GitHub too?</div>
+            <div className="push-actions">
+              <a
+                className="push-btn-yes"
+                href="https://github.com/IShruthii/Moodifyy"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setShowPushPrompt(false)}
+              >
+                Open GitHub
+              </a>
+              <button className="push-btn-no" onClick={() => setShowPushPrompt(false)}>
+                Not now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   )
 }

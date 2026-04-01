@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { NotificationProvider } from './context/NotificationContext'
 import { MoodProvider } from './context/MoodContext'
+import InstallPrompt from './components/common/InstallPrompt'
 
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -55,6 +56,7 @@ export default function App() {
           <MoodProvider>
             <NotificationProvider>
               <AppRoutes />
+              <InstallPrompt />
             </NotificationProvider>
           </MoodProvider>
         </ThemeProvider>

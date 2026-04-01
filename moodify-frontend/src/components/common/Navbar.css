@@ -164,6 +164,35 @@
    PER-THEME SIDEBAR OVERRIDES
    ═══════════════════════════════════════════════ */
 
+/* Barbie — pink sidebar to match bright background */
+[data-theme="barbie"] .sidebar {
+  background: rgba(160, 0, 70, 0.82) !important;
+  border-right-color: rgba(255,105,180,0.35) !important;
+}
+[data-theme="barbie"] .nav-item { color: rgba(255,255,255,0.85) !important; }
+[data-theme="barbie"] .nav-item:hover { background: rgba(255,255,255,0.15) !important; color: #fff !important; }
+[data-theme="barbie"] .nav-item.active { background: rgba(255,255,255,0.25) !important; color: #fff !important; border-color: rgba(255,255,255,0.4) !important; border-radius: 36px !important; }
+[data-theme="barbie"] .logo-text { background: linear-gradient(135deg,#fff,#ffd6f0) !important; -webkit-background-clip:text !important; background-clip:text !important; }
+[data-theme="barbie"] .mobile-nav { background: rgba(160,0,70,0.9) !important; border-top-color: rgba(255,105,180,0.3) !important; }
+[data-theme="barbie"] .mobile-nav-item { color: rgba(255,220,240,0.85) !important; }
+[data-theme="barbie"] .mobile-nav-item.active { color: #fff !important; }
+
+/* Rose Gold — deep rose sidebar */
+[data-theme="rose_gold"] .sidebar {
+  background: rgba(90, 8, 25, 0.82) !important;
+  border-right-color: rgba(251,113,133,0.3) !important;
+}
+[data-theme="rose_gold"] .nav-item { color: rgba(255,200,210,0.85) !important; }
+[data-theme="rose_gold"] .nav-item.active { background: rgba(255,255,255,0.2) !important; color: #fff !important; }
+[data-theme="rose_gold"] .mobile-nav { background: rgba(90,8,25,0.9) !important; }
+
+/* Forest Green — dark green sidebar */
+[data-theme="forest_green"] .sidebar {
+  background: rgba(5, 25, 12, 0.85) !important;
+  border-right-color: rgba(52,211,153,0.25) !important;
+}
+[data-theme="forest_green"] .mobile-nav { background: rgba(5,25,12,0.9) !important; }
+
 /* Ocean Blue — sharp, techy sidebar */
 [data-theme="ocean_blue"] .sidebar {
   background: rgba(10, 22, 40, 0.97);

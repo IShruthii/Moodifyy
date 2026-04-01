@@ -236,3 +236,77 @@
   .mood-logged, .mood-prompt { flex-direction: column; align-items: flex-start; }
   .mood-pattern-card { flex-direction: column; gap: 16px; align-items: flex-start; }
 }
+
+/* ══════════════════════════════════════
+   BRIGHT THEME CARD FIXES
+   Cards need dark glass on bright backgrounds
+══════════════════════════════════════ */
+[data-theme="barbie"] .dashboard-welcome,
+[data-theme="barbie"] .dashboard-mood-card,
+[data-theme="barbie"] .stat-card,
+[data-theme="barbie"] .quick-action-card {
+  background: rgba(120, 0, 55, 0.6) !important;
+  border-color: rgba(255,105,180,0.35) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+[data-theme="barbie"] .welcome-name,
+[data-theme="barbie"] .mood-prompt-title,
+[data-theme="barbie"] .mood-logged-name,
+[data-theme="barbie"] .stat-value,
+[data-theme="barbie"] .section-title,
+[data-theme="barbie"] .qa-label,
+[data-theme="barbie"] .mood-pattern-mood { color: #fff !important; text-shadow: 0 1px 4px rgba(0,0,0,0.5) !important; }
+[data-theme="barbie"] .welcome-greeting,
+[data-theme="barbie"] .welcome-sub,
+[data-theme="barbie"] .mood-logged-label,
+[data-theme="barbie"] .mood-prompt-sub,
+[data-theme="barbie"] .stat-label,
+[data-theme="barbie"] .date-day,
+[data-theme="barbie"] .date-full,
+[data-theme="barbie"] .mood-pattern-label { color: rgba(255,210,230,0.9) !important; }
+
+[data-theme="rose_gold"] .dashboard-welcome,
+[data-theme="rose_gold"] .dashboard-mood-card,
+[data-theme="rose_gold"] .stat-card,
+[data-theme="rose_gold"] .quick-action-card {
+  background: rgba(70, 5, 18, 0.6) !important;
+  border-color: rgba(251,113,133,0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+[data-theme="rose_gold"] .welcome-name,
+[data-theme="rose_gold"] .stat-value,
+[data-theme="rose_gold"] .section-title,
+[data-theme="rose_gold"] .mood-prompt-title { color: #fff !important; }
+
+[data-theme="forest_green"] .dashboard-welcome,
+[data-theme="forest_green"] .dashboard-mood-card,
+[data-theme="forest_green"] .stat-card,
+[data-theme="forest_green"] .quick-action-card {
+  background: rgba(5, 25, 12, 0.65) !important;
+  border-color: rgba(52,211,153,0.25) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Also fix .card and .glass on bright themes globally */
+[data-theme="barbie"] .card,
+[data-theme="barbie"] .glass {
+  background: rgba(120, 0, 55, 0.6) !important;
+  border-color: rgba(255,105,180,0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  color: #fff !important;
+}
+[data-theme="rose_gold"] .card,
+[data-theme="rose_gold"] .glass {
+  background: rgba(70, 5, 18, 0.6) !important;
+  border-color: rgba(251,113,133,0.25) !important;
+  backdrop-filter: blur(16px) !important;
+}
+[data-theme="forest_green"] .card,
+[data-theme="forest_green"] .glass {
+  background: rgba(5, 25, 12, 0.65) !important;
+  border-color: rgba(52,211,153,0.2) !important;
+  backdrop-filter: blur(16px) !important;
+}
