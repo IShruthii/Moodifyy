@@ -56,11 +56,14 @@ export default function DashboardPage() {
         const [moodRes, prefRes] = await Promise.all([getTodaysMood(), getPreference()])
         setTodaysMood(moodRes.data.data)
         setPreference(prefRes.data.data)
-      } catch { /* silent */ }
+      } catch (e) {
+        // 401 handled by axios interceptor (auto-logout)
+        // other errors: silent
+      }
     }
     fetchData()
-    fetchNotifications()
-  }, [user?.avatarId])
+    fetchNotifications().catch(() => {})
+  }, [user?.id])
 
   // Request push notification permission when app is installed as PWA
   useEffect(() => {

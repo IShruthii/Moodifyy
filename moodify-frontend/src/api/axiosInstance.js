@@ -26,7 +26,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status
+    // 401 = unauthorized, 400 on auth endpoints = bad/expired token
+    if (status === 401) {
       localStorage.removeItem('moodify_token')
       localStorage.removeItem('moodify_user')
       window.location.href = '/login'
