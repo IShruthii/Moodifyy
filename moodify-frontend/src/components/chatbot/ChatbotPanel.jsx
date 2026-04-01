@@ -21,6 +21,7 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const [input,     setInput]     = useState('')
   const [loading,   setLoading]   = useState(false)
   const [sessionId, setSessionId] = useState(null)
+  const [slowWarning, setSlowWarning] = useState(false)
 
   // Voice: OFF by default — user must explicitly enable
   const [voiceEnabled, setVoiceEnabled] = useState(false)
@@ -79,8 +80,12 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
     setMessages(prev => [...prev, { sender: 'USER', text: msg, time: new Date() }])
     setInput('')
     setLoading(true)
+    setSlowWarning(false)
     stopSpeaking()
     if (onMessageSent) onMessageSent()
+
+    // Show "waking up" hint after 6 seconds
+    const slowTimer = setTimeout(() => setSlowWarning(true), 6000)
 
     try {
       const res = await sendChatMessage({ message: msg, sessionId, currentMood, quickAction })
@@ -92,13 +97,14 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
         suggestions: data.suggestions,
         time: new Date(),
       }])
-    } catch {
-      // Meaningful fallback for when the API actually times out or fails
-      const fallbacks = [
+    } catch (err) {
+      const isTimeout = err.code === 'ECONNABORTED' || err.message?.includes('timeout') || err.message?.includes('Network')
+      const fallbacks = isTimeout ? [
+        "I'm waking up from a little nap 😴 The server takes ~50 seconds to start. Try again in a moment, I promise I'll be here! 💜",
+        "Oops, I dozed off! Give me 30-60 seconds and try again — I'm warming up just for you 💜",
+      ] : [
         "I'm having a little trouble connecting right now, but I'm still here for you. Could you try asking me again in a moment? 💙",
-        "My connection seems to be sleepy right now. 🌿 If you wait a tiny bit and try again, I'll be right back with you!",
-        "Hmm, my thoughts are loading a bit slowly right now. Feel free to use one of the quick actions below, or pause a second and try again. 😊",
-        "I'm right here. It looks like my connection is slow at the moment, but take a deep breath and try sending that again. 💜",
+        "My thoughts are loading a bit slowly. Take a deep breath and try sending that again. 💜",
       ]
       setMessages(prev => [...prev, {
         sender: 'BOT',
@@ -107,6 +113,8 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
       }])
     } finally {
       setLoading(false)
+      setSlowWarning(false)
+      clearTimeout(slowTimer)
     }
   }
 
@@ -206,6 +214,7 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
               <div className="bot-avatar">🎭</div>
               <div className="message-bubble typing">
                 <span /><span /><span />
+                {slowWarning && <span className="slow-hint">Waking up... ~50s ☕</span>}
               </div>
             </div>
           )}
