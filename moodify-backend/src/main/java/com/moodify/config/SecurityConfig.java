@@ -71,14 +71,11 @@ public class SecurityConfig {
                 .collect(Collectors.toList());
 
         // Always allow localhost for dev
-        if (!origins.contains("http://localhost:5173")) {
-            origins.add("http://localhost:5173");
-        }
-        if (!origins.contains("http://localhost:5174")) {
-            origins.add("http://localhost:5174");
-        }
+        if (!origins.contains("http://localhost:5173")) origins.add("http://localhost:5173");
+        if (!origins.contains("http://localhost:5174")) origins.add("http://localhost:5174");
 
         configuration.setAllowedOrigins(origins);
+        configuration.setAllowedOriginPatterns(List.of("https://*.vercel.app", "http://localhost:*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
