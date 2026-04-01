@@ -27,8 +27,10 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status
-    // 401 = unauthorized, 400 on auth endpoints = bad/expired token
-    if (status === 401) {
+    const url = error.config?.url || ''
+    // Auto-logout on 401, or 400 on protected endpoints (not login/register)
+    const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register')
+    if (status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('moodify_token')
       localStorage.removeItem('moodify_user')
       window.location.href = '/login'
