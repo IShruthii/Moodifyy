@@ -15,7 +15,7 @@
     <artifactId>moodify-backend</artifactId>
     <version>1.0.0</version>
     <name>moodify-backend</name>
-    <description>Moodify - Intelligent Mood-Driven Life Enhancer</description>
+    <description>Moodify - Intelligent Mood-Driven Life Enhancer - v2</description>
     <packaging>jar</packaging>
 
     <properties>
