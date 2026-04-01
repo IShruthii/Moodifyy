@@ -27,6 +27,10 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showGoogleModal, setShowGoogleModal] = useState(false)
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotStatus, setForgotStatus] = useState('') // 'sent' | 'error' | ''
+  const [forgotLoading, setForgotLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -39,6 +43,23 @@ export default function LoginPage() {
       setError(err.response?.data?.message || 'Invalid email or password')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleForgot = async (e) => {
+    e.preventDefault()
+    setForgotLoading(true)
+    setForgotStatus('')
+    try {
+      await import('../api/axiosInstance').then(m =>
+        m.default.post('/auth/forgot-password', { email: forgotEmail })
+      )
+      setForgotStatus('sent')
+    } catch {
+      // Show success anyway to prevent email enumeration
+      setForgotStatus('sent')
+    } finally {
+      setForgotLoading(false)
     }
   }
 
@@ -108,6 +129,13 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
               />
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={() => { setShowForgot(true); setForgotStatus(''); setForgotEmail('') }}
+              >
+                Forgot password?
+              </button>
             </div>
 
             <button
@@ -124,6 +152,49 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgot && (
+        <div className="google-modal-overlay" onClick={() => setShowForgot(false)}>
+          <div className="google-modal animate-fade-in" onClick={e => e.stopPropagation()}>
+            {forgotStatus === 'sent' ? (
+              <>
+                <div className="google-modal-icon">💌</div>
+                <h3 className="google-modal-title">Check your inbox</h3>
+                <p className="google-modal-text">
+                  If <strong>{forgotEmail}</strong> is registered, we've sent a password reset link. Check your email!
+                </p>
+                <button className="btn btn-primary" onClick={() => setShowForgot(false)} style={{ width: '100%', marginTop: 8 }}>
+                  Got it
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="google-modal-icon">🔐</div>
+                <h3 className="google-modal-title">Reset your password</h3>
+                <p className="google-modal-text">Enter your email and we'll send you a reset link.</p>
+                <form onSubmit={handleForgot} style={{ width: '100%', marginTop: 12 }}>
+                  <input
+                    type="email"
+                    className="input"
+                    placeholder="you@example.com"
+                    value={forgotEmail}
+                    onChange={e => setForgotEmail(e.target.value)}
+                    required
+                    style={{ marginBottom: 12 }}
+                  />
+                  <button className="btn btn-primary" type="submit" disabled={forgotLoading} style={{ width: '100%' }}>
+                    {forgotLoading ? 'Sending...' : 'Send Reset Link 💌'}
+                  </button>
+                </form>
+                <button className="btn btn-secondary btn-sm" onClick={() => setShowForgot(false)} style={{ width: '100%', marginTop: 8 }}>
+                  Cancel
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

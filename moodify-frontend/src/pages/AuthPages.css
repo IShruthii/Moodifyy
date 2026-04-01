@@ -289,3 +289,20 @@
   color: var(--text-primary);
   box-shadow: 0 0 16px rgba(124,58,237,0.3);
 }
+
+/* Forgot password link */
+.forgot-link {
+  display: block;
+  margin-top: 6px;
+  text-align: right;
+  background: none;
+  border: none;
+  color: var(--accent-purple-light);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-family);
+  transition: opacity 0.2s;
+}
+.forgot-link:hover { opacity: 0.75; }
