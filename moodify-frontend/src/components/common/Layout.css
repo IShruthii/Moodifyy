@@ -21,3 +21,47 @@
     padding-bottom: 90px;
   }
 }
+
+/* Mobile PC banner — only on mobile */
+.mobile-pc-banner {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-pc-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(236,72,153,0.95));
+    backdrop-filter: blur(8px);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .mobile-pc-banner span { flex: 1; line-height: 1.4; }
+  .mobile-pc-banner button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Push content down to account for banner */
+  .main-content {
+    padding-top: 56px;
+  }
+}
