@@ -113,22 +113,54 @@ export default function Navbar() {
       </nav>
 
       <nav className="mobile-nav">
-        {NAV_ITEMS.slice(0, 5).map(item => (
+        {NAV_ITEMS.slice(0, 4).map(item => (
           <Link key={item.path} to={item.path}
             className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}>
             <span className="mobile-nav-icon">{item.icon}</span>
             <span className="mobile-nav-label">{item.label}</span>
           </Link>
         ))}
+        {/* Profile */}
+        <Link to="/profile"
+          className={`mobile-nav-item ${location.pathname === '/profile' ? 'active' : ''}`}>
+          <span className="mobile-nav-icon">{icons.profile}</span>
+          <span className="mobile-nav-label">Profile</span>
+        </Link>
+        {/* More drawer trigger */}
         <button className={`mobile-nav-item ${showNotifications ? 'active' : ''}`}
           onClick={() => setShowNotifications(!showNotifications)}>
-          <span className="mobile-nav-icon">{icons.alerts}</span>
+          <span className="mobile-nav-icon">⋯</span>
+          <span className="mobile-nav-label">More</span>
           {unreadCount > 0 && <span className="mobile-notif-badge">{unreadCount}</span>}
-          <span className="mobile-nav-label">Alerts</span>
         </button>
       </nav>
 
-      {showNotifications && <NotificationPanel onClose={() => setShowNotifications(false)} />}
+      {/* Mobile More Drawer */}
+      {showNotifications && (
+        <div className="mobile-more-overlay" onClick={() => setShowNotifications(false)}>
+          <div className="mobile-more-drawer" onClick={e => e.stopPropagation()}>
+            <div className="mobile-more-handle" />
+            <div className="mobile-more-grid">
+              <Link to="/analytics" className="mobile-more-item" onClick={() => setShowNotifications(false)}>
+                <span>{icons.insights}</span><span>Insights</span>
+              </Link>
+              <Link to="/report" className="mobile-more-item" onClick={() => setShowNotifications(false)}>
+                <span>{icons.report}</span><span>Report</span>
+              </Link>
+              <button className="mobile-more-item" onClick={() => { setShowNotifications(false); navigate('/alerts') }}>
+                <span style={{position:'relative'}}>
+                  {icons.alerts}
+                  {unreadCount > 0 && <span className="mobile-notif-badge" style={{top:-6,right:-8}}>{unreadCount}</span>}
+                </span>
+                <span>Alerts</span>
+              </button>
+              <button className="mobile-more-item mobile-more-logout" onClick={() => { setShowNotifications(false); handleLogout() }}>
+                <span>{icons.logout}</span><span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
