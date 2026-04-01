@@ -36,6 +36,6 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: FRONTEND_URL
-        value: https://moodify-c5f3-kappa.vercel.app
+        value: https://moodifyy-565t.vercel.app
       - key: PORT
         value: 10000

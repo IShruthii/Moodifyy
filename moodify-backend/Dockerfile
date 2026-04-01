@@ -1,8 +1,13 @@
 # ── Stage 1: Build ────────────────────────────────────────────────────────────
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /app
+
+# Cache bust - forces full rebuild
+ARG CACHEBUST=2
+
 COPY pom.xml .
 RUN mvn dependency:go-offline -q
+
 COPY src ./src
 RUN mvn clean package -DskipTests -q
 
@@ -19,7 +24,6 @@ USER moodify
 EXPOSE 8080
 EXPOSE 10000
 
-# Inline the startup logic — no external shell script needed
 CMD ["sh", "-c", "\
   if [ -n \"$DB_HOST\" ] && [ -n \"$DB_PORT\" ] && [ -n \"$DB_NAME\" ]; then \
     export SPRING_DATASOURCE_URL=\"jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}\"; \
