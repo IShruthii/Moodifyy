@@ -142,7 +142,13 @@ export default function InstallPrompt() {
     }
     deferredPrompt.prompt()
     const { outcome } = await deferredPrompt.userChoice
-    if (outcome === 'accepted') setInstalled(true)
+    if (outcome === 'accepted') {
+      setInstalled(true)
+      // Request notification permission after install
+      if ('Notification' in window && Notification.permission === 'default') {
+        setTimeout(() => Notification.requestPermission(), 2000)
+      }
+    }
     setDeferredPrompt(null)
     setShow(false)
   }

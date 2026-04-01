@@ -69,7 +69,28 @@ export default function RecommendationCard({ item, mood, type }) {
 
   const handleLinkClick = async (link) => {
     try { await logRecommendationClick(mood, type, item.title) } catch {}
-    window.open(link.url, '_blank', 'noopener,noreferrer')
+    // Mobile-friendly link opening — use anchor click to avoid popup blockers
+    const a = document.createElement('a')
+    a.href = link.url
+    a.target = '_blank'
+    a.rel = 'noopener noreferrer'
+    // For Spotify on mobile: try deep link first
+    if (link.icon === 'spotify' && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      // Convert web URL to Spotify deep link
+      const spotifyDeep = link.url.replace('https://open.spotify.com/', 'spotify://')
+      a.href = spotifyDeep
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      // Fallback to web after 1.5s if app didn't open
+      setTimeout(() => {
+        window.location.href = link.url
+      }, 1500)
+      return
+    }
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   // Movie card — special layout
