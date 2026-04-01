@@ -1,4 +1,4 @@
-﻿package com.moodify.service.impl;
+package com.moodify.service.impl;
 
 import com.moodify.dto.ChatRequest;
 import com.moodify.dto.ChatResponse;
