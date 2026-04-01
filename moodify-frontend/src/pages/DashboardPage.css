@@ -310,3 +310,141 @@
   border-color: rgba(52,211,153,0.2) !important;
   backdrop-filter: blur(16px) !important;
 }
+
+/* ── Notification badge in welcome header ── */
+.welcome-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.dash-notif-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.dash-notif-badge:hover {
+  background: rgba(255,255,255,0.14);
+  transform: scale(1.05);
+}
+.dash-notif-icon { font-size: 20px; }
+.dash-notif-count {
+  position: absolute;
+  top: -4px; right: -4px;
+  min-width: 18px; height: 18px;
+  background: var(--nb-color, #ef4444);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-primary);
+  animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes badgePop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+/* ── Notification check-in card ── */
+.dash-notif-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.dash-notif-card:hover {
+  background: rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
+}
+.dash-notif-card--active {
+  border-color: var(--nc-accent, #7c3aed);
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 20px rgba(0,0,0,0.2), inset 0 0 0 1px var(--nc-accent, #7c3aed);
+  animation: notifPulse 2s ease-in-out infinite;
+}
+@keyframes notifPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(0,0,0,0.2), inset 0 0 0 1px var(--nc-accent); }
+  50%      { box-shadow: 0 0 30px rgba(0,0,0,0.3), 0 0 20px color-mix(in srgb, var(--nc-accent) 30%, transparent), inset 0 0 0 1px var(--nc-accent); }
+}
+
+.dash-notif-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+.dash-notif-emoji-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.dash-notif-big-icon { font-size: 32px; }
+.dash-notif-bubble {
+  position: absolute;
+  top: -6px; right: -8px;
+  min-width: 20px; height: 20px;
+  background: var(--nc-gradient, linear-gradient(135deg,#7c3aed,#ec4899));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+  animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.dash-notif-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.dash-notif-msg {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+.dash-notif-cta {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--nc-gradient, linear-gradient(135deg,#7c3aed,#ec4899));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.dash-notif-cta:hover { transform: scale(1.04); }
+
+@media (max-width: 768px) {
+  .welcome-right { flex-direction: row; align-items: center; }
+  .dash-notif-msg { max-width: 180px; }
+  .dash-notif-card { flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+  .dash-notif-msg { display: none; }
+  .dash-notif-card { padding: 14px 16px; }
+}
