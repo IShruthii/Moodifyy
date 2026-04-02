@@ -253,7 +253,8 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
 
         {/* Input area */}
         <div className="chatbot-input-area">
-          {sttSupported && (
+          {/* Mic — always show on mobile, conditionally on desktop */}
+          {(sttSupported || /Android|iPhone|iPad/i.test(navigator.userAgent)) && (
             <button
               className={`chatbot-mic-btn ${listening ? 'listening' : ''}`}
               onClick={handleMicClick}
@@ -270,6 +271,9 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
             placeholder={listening ? 'Listening...' : `Talk to ${botSettings.name}...`}
             rows={1}
             disabled={listening}
+            autoComplete="off"
+            autoCorrect="on"
+            spellCheck="true"
           />
           <button
             className="chatbot-send-btn"
