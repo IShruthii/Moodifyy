@@ -33,6 +33,12 @@ public class UserPreference {
     @Column(name = "music_language")
     private String musicLanguage = "english";
 
+    @Column(name = "bot_name")
+    private String botName = "Moo";
+
+    @Column(name = "bot_personality")
+    private String botPersonality = "flirty";
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -72,6 +78,12 @@ public class UserPreference {
 
     public String getMusicLanguage() { return musicLanguage; }
     public void setMusicLanguage(String musicLanguage) { this.musicLanguage = musicLanguage; }
+
+    public String getBotName() { return botName; }
+    public void setBotName(String botName) { this.botName = botName; }
+
+    public String getBotPersonality() { return botPersonality; }
+    public void setBotPersonality(String botPersonality) { this.botPersonality = botPersonality; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }

@@ -8,6 +8,8 @@ public class PreferenceRequest {
     private boolean notificationEnabled;
     private String dailyReminderTime;
     private String musicLanguage;
+    private String botName;
+    private String botPersonality;
 
     public PreferenceRequest() {}
 
@@ -28,4 +30,10 @@ public class PreferenceRequest {
 
     public String getMusicLanguage() { return musicLanguage; }
     public void setMusicLanguage(String musicLanguage) { this.musicLanguage = musicLanguage; }
+
+    public String getBotName() { return botName; }
+    public void setBotName(String botName) { this.botName = botName; }
+
+    public String getBotPersonality() { return botPersonality; }
+    public void setBotPersonality(String botPersonality) { this.botPersonality = botPersonality; }
 }

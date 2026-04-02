@@ -43,6 +43,10 @@ public class PreferenceServiceImpl implements PreferenceService {
         preference.setNotificationEnabled(request.isNotificationEnabled());
         if (request.getDailyReminderTime() != null) preference.setDailyReminderTime(request.getDailyReminderTime());
         if (request.getMusicLanguage() != null) preference.setMusicLanguage(request.getMusicLanguage());
+        if (request.getBotName() != null && !request.getBotName().isBlank())
+            preference.setBotName(request.getBotName().trim());
+        if (request.getBotPersonality() != null && !request.getBotPersonality().isBlank())
+            preference.setBotPersonality(request.getBotPersonality());
 
         return preferenceRepository.save(preference);
     }

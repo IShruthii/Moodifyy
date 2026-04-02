@@ -8,9 +8,19 @@ import { useTheme } from '../context/ThemeContext'
 import { getPreference, savePreference } from '../api/preferenceApi'
 import './ProfilePage.css'
 
+const PERSONALITIES = [
+  { key: 'flirty',       emoji: '😏', label: 'Flirty',       desc: 'Romantic & playful' },
+  { key: 'friendly',     emoji: '🤗', label: 'Friendly',     desc: 'Warm best-friend energy' },
+  { key: 'sassy',        emoji: '💅', label: 'Sassy',        desc: 'Bold, witty & cheeky' },
+  { key: 'calm',         emoji: '🌿', label: 'Calm',         desc: 'Gentle & grounding' },
+  { key: 'motivational', emoji: '🔥', label: 'Motivational', desc: 'Hype coach vibes' },
+  { key: 'therapist',    emoji: '💙', label: 'Therapist',    desc: 'Empathetic & reflective' },
+  { key: 'funny',        emoji: '😂', label: 'Funny',        desc: 'Humor & good vibes' },
+]
+
 export default function ProfilePage() {
   const { user, updateUser } = useAuth()
-  const { changeTheme, darkMode, toggleDarkMode } = useTheme()
+  const { changeTheme, darkMode, toggleDarkMode, theme } = useTheme()
   const [form, setForm] = useState({
     displayName: '',
     avatarId: 'avatar_1',
@@ -18,12 +28,13 @@ export default function ProfilePage() {
     notificationEnabled: true,
     dailyReminderTime: '09:00',
     musicLanguage: 'english',
+    botName: 'Moo',
+    botPersonality: 'flirty',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState('')
-  const [showPushPrompt, setShowPushPrompt] = useState(false)
 
   useEffect(() => {
     getPreference()
@@ -36,12 +47,22 @@ export default function ProfilePage() {
           notificationEnabled: pref.notificationEnabled ?? true,
           dailyReminderTime: pref.dailyReminderTime || '09:00',
           musicLanguage: pref.musicLanguage || 'english',
+          botName: pref.botName || 'Moo',
+          botPersonality: pref.botPersonality || 'flirty',
         })
         changeTheme(pref.theme || 'soft_purple')
       })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
+
+  // Persist bot settings to localStorage so ChatbotPanel can read them instantly
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('moodify_bot_name', form.botName || 'Moo')
+      localStorage.setItem('moodify_bot_personality', form.botPersonality || 'flirty')
+    }
+  }, [form.botName, form.botPersonality, loading])
 
   const handleSave = async () => {
     setSaving(true)
@@ -50,10 +71,11 @@ export default function ProfilePage() {
       await savePreference(form)
       changeTheme(form.theme)
       updateUser({ name: form.displayName, profileSetup: true, avatarId: form.avatarId })
+      // Persist bot settings immediately
+      localStorage.setItem('moodify_bot_name', form.botName || 'Moo')
+      localStorage.setItem('moodify_bot_personality', form.botPersonality || 'flirty')
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
-      // Ask to push to GitHub after saving
-      setTimeout(() => setShowPushPrompt(true), 1000)
     } catch (err) {
       setSaveError(err.response?.data?.message || 'Failed to save. Please try again.')
     } finally {
@@ -62,6 +84,8 @@ export default function ProfilePage() {
   }
 
   if (loading) return <Layout><div style={{ padding: 40, color: 'var(--text-secondary)' }}>Loading...</div></Layout>
+
+  const selectedPersonality = PERSONALITIES.find(p => p.key === form.botPersonality) || PERSONALITIES[0]
 
   return (
     <Layout>
@@ -77,6 +101,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="profile-sections">
+
           {/* Display Name */}
           <div className="profile-section glass">
             <h2 className="profile-section-title">Display Name</h2>
@@ -98,15 +123,69 @@ export default function ProfilePage() {
             />
           </div>
 
+          {/* ── Companion Settings ── */}
+          <div className="profile-section glass companion-section">
+            <h2 className="profile-section-title">🤖 Your AI Companion</h2>
+            <p className="companion-desc">
+              Name your companion and choose how they talk to you.
+              Changes apply instantly next time you open the chat.
+            </p>
+
+            {/* Bot Name */}
+            <div className="companion-name-row">
+              <label className="label">Companion Name</label>
+              <div className="companion-name-input-wrap">
+                <span className="companion-name-emoji">{selectedPersonality.emoji}</span>
+                <input
+                  type="text"
+                  className="input companion-name-input"
+                  value={form.botName}
+                  onChange={e => setForm({ ...form, botName: e.target.value })}
+                  placeholder="e.g. Moo, Luna, Kai, Aria..."
+                  maxLength={20}
+                />
+              </div>
+              <p className="companion-name-hint">
+                Your companion will introduce themselves as "{form.botName || 'Moo'}"
+              </p>
+            </div>
+
+            {/* Personality Picker */}
+            <div>
+              <label className="label" style={{ marginBottom: 10 }}>Personality Style</label>
+              <div className="personality-grid">
+                {PERSONALITIES.map(p => (
+                  <button
+                    key={p.key}
+                    className={`personality-btn ${form.botPersonality === p.key ? 'selected' : ''}`}
+                    onClick={() => setForm({ ...form, botPersonality: p.key })}
+                  >
+                    <span className="personality-emoji">{p.emoji}</span>
+                    <span className="personality-label">{p.label}</span>
+                    <span className="personality-desc">{p.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div className="companion-preview">
+              <div className="companion-preview-avatar">{selectedPersonality.emoji}</div>
+              <div className="companion-preview-bubble">
+                <span className="companion-preview-name">{form.botName || 'Moo'}</span>
+                <span className="companion-preview-text">
+                  {getPersonalityPreview(form.botPersonality, form.botName || 'Moo')}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Theme */}
           <div className="profile-section glass">
             <h2 className="profile-section-title">App Theme</h2>
             <ThemeSelector
               selected={form.theme}
-              onSelect={theme => {
-                setForm({ ...form, theme })
-                changeTheme(theme)
-              }}
+              onSelect={t => { setForm({ ...form, theme: t }); changeTheme(t) }}
             />
           </div>
 
@@ -115,17 +194,17 @@ export default function ProfilePage() {
             <h2 className="profile-section-title">Display Mode</h2>
             <div className="mode-toggle-row">
               <button
-                className={`mode-btn ${darkMode ? '' : 'mode-btn--active'}`}
+                className={`mode-btn ${!darkMode ? 'mode-btn--active' : ''}`}
                 onClick={() => toggleDarkMode(false)}
               >
-                <span style={{fontSize:22}}>☀️</span>
+                <span style={{ fontSize: 22 }}>☀️</span>
                 <span>Light</span>
               </button>
               <button
                 className={`mode-btn ${darkMode ? 'mode-btn--active' : ''}`}
                 onClick={() => toggleDarkMode(true)}
               >
-                <span style={{fontSize:22}}>🌙</span>
+                <span style={{ fontSize: 22 }}>🌙</span>
                 <span>Dark</span>
               </button>
             </div>
@@ -167,10 +246,10 @@ export default function ProfilePage() {
             </p>
             <div className="music-lang-grid">
               {[
-                { key: 'telugu',  label: 'Telugu',  emoji: '🎶' },
-                { key: 'hindi',   label: 'Hindi',   emoji: '🎵' },
-                { key: 'english', label: 'English', emoji: '🎸' },
-                { key: 'bts',     label: 'BTS / K-Pop', emoji: '💜' },
+                { key: 'telugu',  label: 'Telugu',       emoji: '🎶' },
+                { key: 'hindi',   label: 'Hindi',        emoji: '🎵' },
+                { key: 'english', label: 'English',      emoji: '🎸' },
+                { key: 'bts',     label: 'BTS / K-Pop',  emoji: '💜' },
                 { key: 'private', label: 'Private Album', emoji: '🔒' },
               ].map(lang => (
                 <button
@@ -185,7 +264,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Save Button */}
+          {/* Save */}
           <button
             className="btn btn-primary btn-lg profile-save"
             onClick={handleSave}
@@ -201,32 +280,19 @@ export default function ProfilePage() {
         </div>
       </div>
       <ChatbotFAB />
-
-      {/* Push to GitHub prompt */}
-      {showPushPrompt && (
-        <div className="push-backdrop" onClick={() => setShowPushPrompt(false)}>
-          <div className="push-modal" onClick={e => e.stopPropagation()}
-            style={{ '--p-gradient': theme.gradient, '--p-accent': theme.accent }}>
-            <div className="push-icon">🚀</div>
-            <div className="push-title">Push to GitHub?</div>
-            <div className="push-sub">Your profile preferences are saved. Want to push the latest changes to GitHub too?</div>
-            <div className="push-actions">
-              <a
-                className="push-btn-yes"
-                href="https://github.com/IShruthii/Moodifyy"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setShowPushPrompt(false)}
-              >
-                Open GitHub
-              </a>
-              <button className="push-btn-no" onClick={() => setShowPushPrompt(false)}>
-                Not now
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </Layout>
   )
+}
+
+function getPersonalityPreview(personality, botName) {
+  const previews = {
+    flirty:       `Hey you 😏 I was literally just thinking about you. Tell me everything.`,
+    friendly:     `Omg hi!! I'm so glad you're here 🤗 How's your day going?`,
+    sassy:        `Oh honey, you came to the right place 💅 Spill.`,
+    calm:         `Hey. Take a breath. I'm here, and there's no rush 🌿`,
+    motivational: `LET'S GO! 🔥 You showed up today and that already counts. What are we crushing?`,
+    therapist:    `I'm really glad you're here. How are you really feeling right now? 💙`,
+    funny:        `Okay I'm legally required to ask — how chaotic has your day been? 😂`,
+  }
+  return previews[personality] || `Hi, I'm ${botName}! How can I help you today? 💜`
 }

@@ -10,6 +10,8 @@ public class ChatRequest {
     private String sessionId;
     private String currentMood;
     private String quickAction;
+    private String botName;
+    private String botPersonality;
 
     public ChatRequest() {}
 
@@ -24,4 +26,10 @@ public class ChatRequest {
 
     public String getQuickAction() { return quickAction; }
     public void setQuickAction(String quickAction) { this.quickAction = quickAction; }
+
+    public String getBotName() { return botName; }
+    public void setBotName(String botName) { this.botName = botName; }
+
+    public String getBotPersonality() { return botPersonality; }
+    public void setBotPersonality(String botPersonality) { this.botPersonality = botPersonality; }
 }

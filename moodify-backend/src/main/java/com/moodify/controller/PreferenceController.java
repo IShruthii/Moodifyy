@@ -44,6 +44,8 @@ public class PreferenceController {
         dto.setNotificationEnabled(p.isNotificationEnabled());
         dto.setDailyReminderTime(p.getDailyReminderTime());
         dto.setMusicLanguage(p.getMusicLanguage());
+        dto.setBotName(p.getBotName() != null ? p.getBotName() : "Moo");
+        dto.setBotPersonality(p.getBotPersonality() != null ? p.getBotPersonality() : "flirty");
         return dto;
     }
 }

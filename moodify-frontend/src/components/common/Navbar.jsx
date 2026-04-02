@@ -77,7 +77,6 @@ export default function Navbar() {
     { path: '/recommendations', icon: icons.foryou,   label: 'For You' },
     { path: '/calendar',        icon: icons.calendar, label: 'Calendar' },
     { path: '/analytics',       icon: icons.insights, label: 'Insights' },
-    { path: '/report',          icon: icons.report,   label: 'Report' },
     { path: '/profile',         icon: icons.profile,  label: 'Profile' },
   ]
 
@@ -143,9 +142,6 @@ export default function Navbar() {
             <div className="mobile-more-grid">
               <Link to="/analytics" className="mobile-more-item" onClick={() => setShowNotifications(false)}>
                 <span>{icons.insights}</span><span>Insights</span>
-              </Link>
-              <Link to="/report" className="mobile-more-item" onClick={() => setShowNotifications(false)}>
-                <span>{icons.report}</span><span>Report</span>
               </Link>
               <button className="mobile-more-item" onClick={() => { setShowNotifications(false); navigate('/alerts') }}>
                 <span style={{position:'relative'}}>

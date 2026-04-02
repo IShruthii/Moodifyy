@@ -15,7 +15,7 @@ import CalendarPage from './pages/CalendarPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import ProfilePage from './pages/ProfilePage'
 import GamesPage from './pages/GamesPage'
-import ReportPage from './pages/ReportPage'
+import AlertsPage from './pages/AlertsPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -42,7 +42,9 @@ function AppRoutes() {
       <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/games/:gameId" element={<ProtectedRoute><GamesPage /></ProtectedRoute>} />
-      <Route path="/report" element={<ProtectedRoute><ReportPage /></ProtectedRoute>} />
+      <Route path="/alerts" element={<ProtectedRoute><AlertsPage /></ProtectedRoute>} />
+      {/* Redirect old /report to merged /analytics */}
+      <Route path="/report" element={<Navigate to="/analytics" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
