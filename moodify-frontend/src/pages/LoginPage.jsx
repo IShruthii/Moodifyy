@@ -1,46 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './AuthPages.css'
 
-function GoogleComingSoonModal({ onClose }) {
-  return (
-    <div className="google-modal-overlay" onClick={onClose}>
-      <div className="google-modal animate-fade-in" onClick={e => e.stopPropagation()}>
-        <div className="google-modal-icon">🚀</div>
-        <h3 className="google-modal-title">Google Sign-In Coming Soon</h3>
-        <p className="google-modal-text">
-          We're working on Google OAuth integration. For now, sign in with your email and password.
-        </p>
-        <button className="btn btn-primary" onClick={onClose} style={{ width: '100%', marginTop: 8 }}>
-          Got it
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const emailRef = useRef(null)
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [showGoogleModal, setShowGoogleModal] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [showForgot, setShowForgot] = useState(false)
   const [forgotEmail, setForgotEmail] = useState('')
-  const [forgotStatus, setForgotStatus] = useState('') // 'sent' | 'error' | ''
+  const [forgotStatus, setForgotStatus] = useState('')
   const [forgotLoading, setForgotLoading] = useState(false)
+
+  // Auto-focus email on mount
+  useEffect(() => { emailRef.current?.focus() }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!form.email.trim() || !form.password) {
+      setError('Please fill in all fields')
+      return
+    }
     setError('')
     setLoading(true)
     try {
-      await login(form.email, form.password)
-      navigate('/dashboard')
+      const data = await login(form.email, form.password)
+      // Route based on profile completion
+      navigate(data.profileSetup ? '/dashboard' : '/profile', { replace: true })
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password')
+      setError(err.response?.data?.message || 'Invalid email or password. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -49,18 +41,13 @@ export default function LoginPage() {
   const handleForgot = async (e) => {
     e.preventDefault()
     setForgotLoading(true)
-    setForgotStatus('')
     try {
       await import('../api/axiosInstance').then(m =>
         m.default.post('/auth/forgot-password', { email: forgotEmail })
       )
-      setForgotStatus('sent')
-    } catch {
-      // Show success anyway to prevent email enumeration
-      setForgotStatus('sent')
-    } finally {
-      setForgotLoading(false)
-    }
+    } catch { /* silent — prevent email enumeration */ }
+    setForgotStatus('sent')
+    setForgotLoading(false)
   }
 
   return (
@@ -70,8 +57,6 @@ export default function LoginPage() {
         <div className="auth-orb orb-2" />
         <div className="auth-orb orb-3" />
       </div>
-
-      {showGoogleModal && <GoogleComingSoonModal onClose={() => setShowGoogleModal(false)} />}
 
       <div className="auth-container">
         <div className="auth-logo">
@@ -84,30 +69,18 @@ export default function LoginPage() {
           <h2 className="auth-title">Welcome back</h2>
           <p className="auth-subtitle">Sign in to continue your journey</p>
 
-          <button className="btn-google" onClick={() => setShowGoogleModal(true)} type="button">
-            <svg className="google-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Continue with Google
-          </button>
-
-          <div className="auth-divider">
-            <span>or sign in with email</span>
-          </div>
-
           {error && (
-            <div className="auth-error">
+            <div className="auth-error" role="alert">
               <span>⚠️</span> {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="auth-form">
+          <form onSubmit={handleSubmit} className="auth-form" noValidate>
             <div className="form-group">
-              <label className="label">Email</label>
+              <label className="label" htmlFor="login-email">Email</label>
               <input
+                id="login-email"
+                ref={emailRef}
                 type="email"
                 className="input"
                 placeholder="you@example.com"
@@ -119,16 +92,27 @@ export default function LoginPage() {
             </div>
 
             <div className="form-group">
-              <label className="label">Password</label>
-              <input
-                type="password"
-                className="input"
-                placeholder="Your password"
-                value={form.password}
-                onChange={e => setForm({ ...form, password: e.target.value })}
-                required
-                autoComplete="current-password"
-              />
+              <label className="label" htmlFor="login-password">Password</label>
+              <div className="input-password-wrap">
+                <input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}
+                  className="input input-password"
+                  placeholder="Your password"
+                  value={form.password}
+                  onChange={e => setForm({ ...form, password: e.target.value })}
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(v => !v)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               <button
                 type="button"
                 className="forgot-link"
@@ -143,7 +127,9 @@ export default function LoginPage() {
               className="btn btn-primary btn-lg auth-submit"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign In ✨'}
+              {loading ? (
+                <span className="auth-loading-row"><span className="auth-spinner" /> Signing in...</span>
+              ) : 'Sign In ✨'}
             </button>
           </form>
 
@@ -162,9 +148,9 @@ export default function LoginPage() {
                 <div className="google-modal-icon">💌</div>
                 <h3 className="google-modal-title">Check your inbox</h3>
                 <p className="google-modal-text">
-                  If <strong>{forgotEmail}</strong> is registered, we've sent a password reset link. Check your email!
+                  If <strong>{forgotEmail}</strong> is registered, we've sent a reset link.
                 </p>
-                <button className="btn btn-primary" onClick={() => setShowForgot(false)} style={{ width: '100%', marginTop: 8 }}>
+                <button className="btn btn-primary" onClick={() => setShowForgot(false)} style={{ width: '100%', marginTop: 12 }}>
                   Got it
                 </button>
               </>
@@ -181,6 +167,7 @@ export default function LoginPage() {
                     value={forgotEmail}
                     onChange={e => setForgotEmail(e.target.value)}
                     required
+                    autoFocus
                     style={{ marginBottom: 12 }}
                   />
                   <button className="btn btn-primary" type="submit" disabled={forgotLoading} style={{ width: '100%' }}>

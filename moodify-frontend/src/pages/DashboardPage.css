@@ -448,3 +448,56 @@
   .dash-notif-msg { font-size: 11px; max-width: 160px; }
   .dash-notif-card { padding: 14px 16px; }
 }
+
+/* ── Mini Stats Row ── */
+.dash-stats-row {
+  display: flex;
+  gap: 12px;
+}
+
+.dash-stat-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.dash-stat-pill:hover {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-2px);
+}
+
+.dash-stat-icon { font-size: 24px; flex-shrink: 0; }
+
+.dash-stat-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+.dash-stat-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 1px;
+}
+
+@media (max-width: 480px) {
+  .dash-stats-row { gap: 8px; }
+  .dash-stat-pill { padding: 12px 10px; gap: 8px; }
+  .dash-stat-icon { font-size: 20px; }
+  .dash-stat-value { font-size: 17px; }
+  .dash-stat-label { font-size: 10px; }
+}
