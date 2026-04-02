@@ -1,10 +1,81 @@
 import React, { useState } from 'react'
 import './PermissionPrompt.css'
 
+// Personality-aware test notification messages
+// Only used when user has explicitly chosen a personality
+const PERSONALITY_TEST_NOTIFS = {
+  flirty: {
+    title: 'Moodify 😏',
+    body: "Hey you… I've been waiting. Come tell me how you're feeling? 💜",
+  },
+  friendly: {
+    title: 'Moodify 🤗',
+    body: "Yay, notifications are on! I'll check in on you throughout the day 🙌",
+  },
+  sassy: {
+    title: 'Moodify 💅',
+    body: "Okay so notifications are on. Don't ignore me. I will notice. 👀",
+  },
+  calm: {
+    title: 'Moodify 🌿',
+    body: "Notifications are on. I'll reach out gently when you need a moment. 🍃",
+  },
+  motivational: {
+    title: 'Moodify 🔥',
+    body: "LET'S GO! Notifications are live. I'll keep you accountable. You've got this! 💪",
+  },
+  therapist: {
+    title: 'Moodify 💙',
+    body: "Notifications are on. I'll check in on you — no pressure, just care. 💙",
+  },
+  funny: {
+    title: 'Moodify 😂',
+    body: "Notifications: activated. You can't escape me now. (Just kidding… mostly.) 😂",
+  },
+}
+
+// Default neutral tone — used when no personality is selected
+const DEFAULT_TEST_NOTIF = {
+  title: 'Moodify 💜',
+  body: "Notifications are on! I'll remind you to check in throughout the day.",
+}
+
+function getTestNotif(personality) {
+  if (!personality) return DEFAULT_TEST_NOTIF
+  return PERSONALITY_TEST_NOTIFS[personality] || DEFAULT_TEST_NOTIF
+}
+
 export default function PermissionPrompt({ onDone }) {
-  const [step, setStep] = useState('idle') // idle | notif | location | done
+  const [step, setStep] = useState('idle')
   const [notifStatus, setNotifStatus] = useState(null)
   const [locationStatus, setLocationStatus] = useState(null)
+
+  // Read personality from localStorage — only if user explicitly set it
+  const personality = localStorage.getItem('moodify_bot_personality') || null
+
+  const fireTestNotification = () => {
+    if (Notification.permission !== 'granted') return
+    const notif = getTestNotif(personality)
+    try {
+      new Notification(notif.title, {
+        body: notif.body,
+        icon: '/favicon.svg',
+        badge: '/favicon.svg',
+        vibrate: [200, 100, 200],
+      })
+    } catch {
+      // Some browsers block Notification constructor — SW will handle it
+      navigator.serviceWorker?.ready.then(reg => {
+        reg.showNotification(notif.title, {
+          body: notif.body,
+          icon: '/favicon.svg',
+          badge: '/favicon.svg',
+          vibrate: [200, 100, 200],
+          data: { url: '/' },
+        })
+      })
+    }
+  }
 
   const requestNotification = async () => {
     setStep('notif')
@@ -14,10 +85,15 @@ export default function PermissionPrompt({ onDone }) {
     }
     if (Notification.permission === 'granted') {
       setNotifStatus('granted')
+      fireTestNotification()
       return
     }
     const result = await Notification.requestPermission()
     setNotifStatus(result)
+    if (result === 'granted') {
+      // Small delay so the permission dialog closes first
+      setTimeout(fireTestNotification, 800)
+    }
   }
 
   const requestLocation = () => {
@@ -71,13 +147,11 @@ export default function PermissionPrompt({ onDone }) {
     <div className="perm-overlay">
       <div className="perm-card animate-fade-in">
 
-        {/* Progress dots */}
         <div className="perm-dots">
           <div className={`perm-dot ${step !== 'idle' ? 'active' : ''}`} />
           <div className={`perm-dot ${step === 'location' || step === 'done' ? 'active' : ''}`} />
         </div>
 
-        {/* Notification step */}
         {(step === 'idle' || step === 'notif') && (
           <div className="perm-step animate-fade-in">
             <div className="perm-icon-wrap notif-icon">
@@ -102,7 +176,6 @@ export default function PermissionPrompt({ onDone }) {
           </div>
         )}
 
-        {/* Location step */}
         {step === 'location' && (
           <div className="perm-step animate-fade-in">
             <div className="perm-icon-wrap location-icon">

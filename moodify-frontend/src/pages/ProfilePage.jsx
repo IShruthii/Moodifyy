@@ -74,6 +74,18 @@ export default function ProfilePage() {
       // Persist bot settings immediately
       localStorage.setItem('moodify_bot_name', form.botName || 'Moo')
       localStorage.setItem('moodify_bot_personality', form.botPersonality || 'flirty')
+      // Notify service worker of personality change so scheduled notifications update
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(reg => {
+          const target = reg.active || reg.waiting || reg.installing
+          if (target) {
+            target.postMessage({
+              type: 'SET_PERSONALITY',
+              personality: form.botPersonality || 'neutral',
+            })
+          }
+        })
+      }
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err) {

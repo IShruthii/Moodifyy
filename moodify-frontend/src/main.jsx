@@ -15,9 +15,15 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('[SW] Registered:', reg.scope)
-        // Request notification permission after SW is ready
+
+        // Send current personality to SW so scheduled notifications use the right tone
+        const personality = localStorage.getItem('moodify_bot_personality')
+        if (personality && reg.active) {
+          reg.active.postMessage({ type: 'SET_PERSONALITY', personality })
+        }
+
+        // Request notification permission after SW is ready (5s delay)
         if ('Notification' in window && Notification.permission === 'default') {
-          // Small delay so it doesn't fire immediately on page load
           setTimeout(() => {
             Notification.requestPermission().then(perm => {
               console.log('[Notifications] Permission:', perm)
