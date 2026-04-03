@@ -33,6 +33,15 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  /* Don't clip the mood grid on mobile */
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .mood-page-card {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
 }
 
 .mood-note-section {
