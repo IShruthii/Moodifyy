@@ -23,7 +23,7 @@ export default function MoodPage() {
     setError('')
     setLoading(true)
     try {
-      await logMood({ mood: selectedMood, note, intensity })
+      await logMood({ mood: selectedMood, note })
       setCurrentMood(selectedMood)
       navigate('/recommendations')
     } catch (err) {

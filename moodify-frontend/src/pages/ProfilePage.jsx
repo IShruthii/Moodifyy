@@ -56,13 +56,19 @@ export default function ProfilePage() {
       .finally(() => setLoading(false))
   }, [])
 
-  // Persist bot settings to localStorage so ChatbotPanel can read them instantly
+  // Sync bot settings to localStorage immediately on any change
+  // This ensures chatbot works even if backend save fails
   useEffect(() => {
-    if (!loading) {
-      localStorage.setItem('moodify_bot_name', form.botName || 'Moo')
-      localStorage.setItem('moodify_bot_personality', form.botPersonality || 'flirty')
+    if (!loading && form.botName) {
+      localStorage.setItem('moodify_bot_name', form.botName)
     }
-  }, [form.botName, form.botPersonality, loading])
+  }, [form.botName, loading])
+
+  useEffect(() => {
+    if (!loading && form.botPersonality) {
+      localStorage.setItem('moodify_bot_personality', form.botPersonality)
+    }
+  }, [form.botPersonality, loading])
 
   const handleSave = async () => {
     setSaving(true)
@@ -154,7 +160,7 @@ export default function ProfilePage() {
       <div className="profile-page animate-fade-in">
         <div className="profile-header">
           <div className="profile-avatar-display">
-            <span className="profile-avatar-emoji">{getAvatarEmoji(form.avatarId)}</span>
+            <span className="profile-avatar-emoji">{getAvatarEmoji(form.avatarId, user?.gender)}</span>
           </div>
           <div>
             <h1 className="profile-name">{form.displayName || user?.name}</h1>
@@ -363,6 +369,11 @@ export default function ProfilePage() {
           >
             {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Preferences'}
           </button>
+          {saved && (
+            <div className="profile-save-toast">
+              ✓ Preferences saved — bot name "{form.botName || 'Moo'}" and {form.botPersonality} personality active
+            </div>
+          )}
           {saveError && (
             <p style={{ color: '#f87171', textAlign: 'center', fontSize: 14, marginTop: 8 }}>
               ⚠️ {saveError}

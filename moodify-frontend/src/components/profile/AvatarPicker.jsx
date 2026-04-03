@@ -33,6 +33,18 @@ export default function AvatarPicker({ selected, onSelect }) {
   )
 }
 
-export function getAvatarEmoji(avatarId) {
-  return AVATARS.find(a => a.id === avatarId)?.emoji || '🧑'
+export function getAvatarEmoji(avatarId, gender) {
+  // If avatar is explicitly set, use it
+  if (avatarId && avatarId !== 'avatar_1') {
+    return AVATARS.find(a => a.id === avatarId)?.emoji || getGenderAvatar(gender)
+  }
+  // Fall back to gender-based default
+  return getGenderAvatar(gender) || AVATARS.find(a => a.id === avatarId)?.emoji || '🧑'
+}
+
+function getGenderAvatar(gender) {
+  if (gender === 'female') return '👩'
+  if (gender === 'male') return '👨'
+  if (gender === 'other') return '🧑'
+  return null
 }
