@@ -92,6 +92,7 @@ public class MoodServiceImpl implements MoodService {
         response.setEnergyLevel(entry.getEnergyLevel());
         response.setPositivityScore(entry.getPositivityScore());
         response.setNote(entry.getNote());
+        response.setIntensity(entry.getIntensity());
         response.setEntryDate(entry.getEntryDate());
         response.setCreatedAt(entry.getCreatedAt());
         return response;

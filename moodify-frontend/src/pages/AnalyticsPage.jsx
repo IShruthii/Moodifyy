@@ -4,10 +4,17 @@ import StreakCard from '../components/analytics/StreakCard'
 import BadgeCard from '../components/analytics/BadgeCard'
 import ChatbotFAB from '../components/chatbot/ChatbotFAB'
 import LoadingSpinner from '../components/common/LoadingSpinner'
+import CalendarWidget from '../components/calendar/CalendarWidget'
 import { getAnalytics, getMonthlyReport } from '../api/analyticsApi'
 import { getFeedbackSummary } from '../api/feedbackApi'
 import { useAuth } from '../context/AuthContext'
 import './AnalyticsPage.css'
+
+const ANALYTICS_TABS = [
+  { key: 'overview',  label: '📊 Overview' },
+  { key: 'calendar',  label: '📅 Calendar' },
+  { key: 'report',    label: '📥 Report' },
+]
 
 const MONTHS = [
   'January','February','March','April','May','June',
@@ -31,6 +38,7 @@ const MOOD_COLORS = {
 
 export default function AnalyticsPage() {
   const { user } = useAuth()
+  const [activeTab, setActiveTab] = useState('overview')
   const [analytics, setAnalytics] = useState(null)
   const [feedback,  setFeedback]  = useState(null)
   const [loading,   setLoading]   = useState(true)
@@ -150,6 +158,28 @@ export default function AnalyticsPage() {
           <p className="page-subtitle">Your emotional patterns and monthly wellness summary</p>
         </div>
 
+        {/* Tab navigation */}
+        <div className="analytics-tabs">
+          {ANALYTICS_TABS.map(tab => (
+            <button
+              key={tab.key}
+              className={`analytics-tab ${activeTab === tab.key ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Calendar tab */}
+        {activeTab === 'calendar' && (
+          <div className="analytics-section">
+            <CalendarWidget />
+          </div>
+        )}
+
+        {/* Overview tab */}
+        {activeTab === 'overview' && <>
         {/* Streak */}
         <StreakCard
           currentStreak={analytics?.currentStreak || 0}
@@ -262,6 +292,10 @@ export default function AnalyticsPage() {
           )}
         </div>
 
+        </> /* end overview tab */}
+
+        {/* Report tab */}
+        {activeTab === 'report' && <>
         {/* ── Monthly Report Section ── */}
         <div className="analytics-section report-section">
           <h2 className="section-title">Monthly Report</h2>
@@ -401,6 +435,8 @@ export default function AnalyticsPage() {
             </div>
           )}
         </div>
+
+        </> /* end report tab */}
 
       </div>
       <ChatbotFAB />

@@ -408,3 +408,44 @@
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .stat-value { font-size: 22px; }
 }
+
+/* ── Analytics Tabs ── */
+.analytics-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 0;
+  margin-bottom: 4px;
+}
+
+.analytics-tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  font-family: var(--font-family);
+  white-space: nowrap;
+}
+
+.analytics-tab:hover {
+  color: var(--text-secondary);
+}
+
+.analytics-tab.active {
+  color: var(--accent-purple-light);
+  border-bottom-color: var(--accent-purple);
+}
+
+@media (max-width: 480px) {
+  .analytics-tabs { gap: 0; }
+  .analytics-tab { padding: 10px 14px; font-size: 13px; }
+}
+
+[data-mode="light"] .analytics-tab { color: #8888aa; }
+[data-mode="light"] .analytics-tab.active { color: var(--accent-purple); }
+[data-mode="light"] .analytics-tabs { border-bottom-color: rgba(0,0,0,0.1); }

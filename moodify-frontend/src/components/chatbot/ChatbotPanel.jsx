@@ -163,16 +163,35 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
       const isTimeout = err.code === 'ECONNABORTED'
         || err.message?.includes('timeout')
         || err.message?.includes('Network')
-      const fallbacks = isTimeout ? [
-        `I'm waking up from a little nap 😴 The server takes ~50 seconds to start. Try again in a moment! 💜`,
-        `Oops, I dozed off! Give me 30-60 seconds and try again — I'm warming up just for you 💜`,
-      ] : [
-        `I'm having a little trouble connecting right now. Try again in a moment? 💙`,
-        `My thoughts are loading slowly. Take a breath and try again. 💜`,
-      ]
+      const { name: botName, personality } = getBotSettings()
+
+      // Personality-aware fallback messages
+      const timeoutFallbacks = {
+        flirty:       `I dozed off for a sec 😴 Give me ~50 seconds and I'll be right back for you 💜`,
+        friendly:     `Oops, server's waking up! Give it ~50 seconds and try again 🙌`,
+        sassy:        `Okay so the server decided to nap. Rude. Try again in ~50 seconds 💅`,
+        calm:         `The server is resting. Give it ~50 seconds and try again gently 🌿`,
+        motivational: `Server cold start! 50 seconds and we're BACK. Don't give up! 🔥`,
+        therapist:    `The server needs a moment. Take a breath — try again in ~50 seconds 💙`,
+        funny:        `The server is doing its morning routine. ~50 seconds. We wait. 😂`,
+      }
+      const errorFallbacks = {
+        flirty:       `Something went wrong on my end 😔 Try again in a moment? I'm still here 💜`,
+        friendly:     `Hmm, something went wrong! Try sending that again? 💙`,
+        sassy:        `Well that didn't work. Try again — I'll pretend it didn't happen 👀`,
+        calm:         `A small hiccup. Take a breath and try again when you're ready 🌿`,
+        motivational: `Minor setback! Try again — we don't quit! 💪`,
+        therapist:    `Something went wrong, but I'm still here. Try again when you're ready 💙`,
+        funny:        `Error 404: my brain not found. Try again? 😂`,
+      }
+
+      const pool = isTimeout
+        ? (timeoutFallbacks[personality] || timeoutFallbacks.flirty)
+        : (errorFallbacks[personality] || errorFallbacks.flirty)
+
       setMessages(prev => [...prev, {
         sender: 'BOT',
-        text: fallbacks[Math.floor(Math.random() * fallbacks.length)],
+        text: pool,
         time: new Date(),
       }])
     } finally {
@@ -275,7 +294,15 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
               <div className="bot-avatar">{botAvatar}</div>
               <div className="message-bubble typing">
                 <span /><span /><span />
-                {slowWarning && <span className="slow-hint">Waking up... ~50s ☕</span>}
+                {slowWarning && (
+                  <span className="slow-hint">
+                    {botSettings.personality === 'sassy' ? 'Server napping... 💅 ~50s' :
+                     botSettings.personality === 'funny' ? 'Loading brain... ~50s 😂' :
+                     botSettings.personality === 'motivational' ? 'Warming up! ~50s 🔥' :
+                     botSettings.personality === 'calm' ? 'Almost ready... 🌿' :
+                     'Waking up... ~50s ☕'}
+                  </span>
+                )}
               </div>
             </div>
           )}

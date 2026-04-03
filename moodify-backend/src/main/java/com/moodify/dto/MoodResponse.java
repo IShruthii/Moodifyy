@@ -11,6 +11,7 @@ public class MoodResponse {
     private String moodCategory;
     private Integer energyLevel;
     private Integer positivityScore;
+    private Integer intensity;
     private String note;
     private LocalDate entryDate;
     private LocalDateTime createdAt;
@@ -34,6 +35,9 @@ public class MoodResponse {
 
     public Integer getPositivityScore() { return positivityScore; }
     public void setPositivityScore(Integer positivityScore) { this.positivityScore = positivityScore; }
+
+    public Integer getIntensity() { return intensity; }
+    public void setIntensity(Integer intensity) { this.intensity = intensity; }
 
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
