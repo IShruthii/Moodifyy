@@ -30,6 +30,34 @@ function getBotSettings() {
   }
 }
 
+// Persist messages to localStorage (keep last 30, strip time objects for storage)
+const CHAT_STORAGE_KEY = 'moodify_chat_messages'
+const SESSION_STORAGE_KEY = 'moodify_chat_session_id'
+
+function loadStoredMessages(botName) {
+  try {
+    const stored = localStorage.getItem(CHAT_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      // Restore time as Date objects
+      return parsed.map(m => ({ ...m, time: new Date(m.time) }))
+    }
+  } catch { /* ignore */ }
+  return [{
+    sender: 'BOT',
+    text: `Hey! I'm ${botName} 💜 How are you feeling right now? I'm here to listen.`,
+    time: new Date(),
+  }]
+}
+
+function saveMessages(messages) {
+  try {
+    // Keep last 30 messages only
+    const toSave = messages.slice(-30)
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(toSave))
+  } catch { /* ignore */ }
+}
+
 export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const { currentMood } = useMood()
 
@@ -38,17 +66,10 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
 
   const botAvatar = PERSONALITY_AVATARS[botSettings.personality] || '🎭'
 
-  const [messages, setMessages] = useState(() => {
-    const s = getBotSettings()
-    return [{
-      sender: 'BOT',
-      text: `Hey! I'm ${s.name} 💜 How are you feeling right now? I'm here to listen.`,
-      time: new Date(),
-    }]
-  })
+  const [messages, setMessages] = useState(() => loadStoredMessages(getBotSettings().name))
   const [input,       setInput]       = useState('')
   const [loading,     setLoading]     = useState(false)
-  const [sessionId,   setSessionId]   = useState(null)
+  const [sessionId,   setSessionId]   = useState(() => localStorage.getItem(SESSION_STORAGE_KEY) || null)
   const [slowWarning, setSlowWarning] = useState(false)
   const [voiceEnabled, setVoiceEnabled] = useState(false)
 
@@ -77,6 +98,16 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    if (messages.length > 1) saveMessages(messages)
+  }, [messages])
+
+  // Persist sessionId
+  useEffect(() => {
+    if (sessionId) localStorage.setItem(SESSION_STORAGE_KEY, sessionId)
+  }, [sessionId])
 
   // Speak bot replies when voice is on
   useEffect(() => {

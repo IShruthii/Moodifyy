@@ -8,6 +8,7 @@ public class MoodRequest {
     private String mood;
 
     private String note;
+    private Integer intensity;
 
     public MoodRequest() {}
 
@@ -21,4 +22,7 @@ public class MoodRequest {
 
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
+
+    public Integer getIntensity() { return intensity; }
+    public void setIntensity(Integer intensity) { this.intensity = intensity; }
 }

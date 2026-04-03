@@ -31,6 +31,9 @@ public class MoodEntry {
     @Column(name = "positivity_score")
     private Integer positivityScore;
 
+    @Column(name = "intensity")
+    private Integer intensity;
+
     @Column(columnDefinition = "TEXT")
     private String note;
 
@@ -70,6 +73,9 @@ public class MoodEntry {
 
     public Integer getPositivityScore() { return positivityScore; }
     public void setPositivityScore(Integer positivityScore) { this.positivityScore = positivityScore; }
+
+    public Integer getIntensity() { return intensity; }
+    public void setIntensity(Integer intensity) { this.intensity = intensity; }
 
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }

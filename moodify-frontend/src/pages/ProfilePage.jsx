@@ -95,7 +95,57 @@ export default function ProfilePage() {
     }
   }
 
-  if (loading) return <Layout><div style={{ padding: 40, color: 'var(--text-secondary)' }}>Loading...</div></Layout>
+  const [testNotifStatus, setTestNotifStatus] = useState('') // '' | 'sent' | 'denied' | 'unsupported'
+
+  const handleTestNotification = async () => {
+    if (!('Notification' in window)) {
+      setTestNotifStatus('unsupported')
+      return
+    }
+    let permission = Notification.permission
+    if (permission === 'default') {
+      permission = await Notification.requestPermission()
+    }
+    if (permission !== 'granted') {
+      setTestNotifStatus('denied')
+      return
+    }
+    // Build personality-aware test message
+    const personality = form.botPersonality
+    const botName = form.botName || 'Moo'
+    const PERSONALITY_TEST = {
+      flirty:       { title: `${botName} 😏`, body: "Hey you… I've been thinking about you. Come tell me how you're feeling? 💜" },
+      friendly:     { title: `${botName} 🤗`, body: "Hey! Just checking in — how are you doing right now? 😊" },
+      sassy:        { title: `${botName} 💅`, body: "Okay so… are you going to log your mood or just ignore me? 👀" },
+      calm:         { title: `${botName} 🌿`, body: "Take a gentle breath. How are you feeling right now? 🍃" },
+      motivational: { title: `${botName} 🔥`, body: "LET'S GO! Time to check in and keep that streak alive! 💪" },
+      therapist:    { title: `${botName} 💙`, body: "How are you really doing today? I'm here when you're ready." },
+      funny:        { title: `${botName} 😂`, body: "Okay I've been waiting for you to open the app. It's been awkward." },
+    }
+    const notif = PERSONALITY_TEST[personality] || { title: `${botName} 💜`, body: "Notifications are working! I'll check in on you throughout the day." }
+    try {
+      // Try SW first (more reliable on mobile)
+      const reg = await navigator.serviceWorker?.ready
+      if (reg) {
+        await reg.showNotification(notif.title, {
+          body: notif.body,
+          icon: '/favicon.svg',
+          badge: '/favicon.svg',
+          vibrate: [200, 100, 200],
+          data: { url: '/' },
+        })
+      } else {
+        new Notification(notif.title, { body: notif.body, icon: '/favicon.svg' })
+      }
+      setTestNotifStatus('sent')
+      setTimeout(() => setTestNotifStatus(''), 4000)
+    } catch {
+      // Fallback
+      try { new Notification(notif.title, { body: notif.body }) } catch {}
+      setTestNotifStatus('sent')
+      setTimeout(() => setTestNotifStatus(''), 4000)
+    }
+  }
 
   const selectedPersonality = PERSONALITIES.find(p => p.key === form.botPersonality) || PERSONALITIES[0]
 
@@ -189,6 +239,35 @@ export default function ProfilePage() {
                   {getPersonalityPreview(form.botPersonality, form.botName || 'Moo')}
                 </span>
               </div>
+            </div>
+
+            {/* Test notification button */}
+            <div className="companion-test-notif">
+              <button
+                type="button"
+                className="btn btn-secondary companion-test-btn"
+                onClick={handleTestNotification}
+              >
+                🔔 Test Notification
+              </button>
+              {testNotifStatus === 'sent' && (
+                <span className="companion-test-status companion-test-ok">
+                  ✓ Notification sent in {selectedPersonality.label} style!
+                </span>
+              )}
+              {testNotifStatus === 'denied' && (
+                <span className="companion-test-status companion-test-err">
+                  ⚠️ Notifications blocked — enable them in browser settings
+                </span>
+              )}
+              {testNotifStatus === 'unsupported' && (
+                <span className="companion-test-status companion-test-err">
+                  ⚠️ Notifications not supported in this browser
+                </span>
+              )}
+              <p className="companion-test-hint">
+                Sends a test notification in your selected personality style
+              </p>
             </div>
           </div>
 

@@ -48,6 +48,7 @@ public class MoodServiceImpl implements MoodService {
         entry.setEnergyLevel(moodInfo.getEnergyLevel());
         entry.setPositivityScore(moodInfo.getPositivityScore());
         entry.setNote(request.getNote());
+        if (request.getIntensity() != null) entry.setIntensity(request.getIntensity());
         entry.setEntryDate(LocalDate.now());
 
         entry = moodEntryRepository.save(entry);
