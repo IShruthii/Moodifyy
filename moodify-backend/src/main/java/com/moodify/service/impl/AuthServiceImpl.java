@@ -3,12 +3,16 @@ package com.moodify.service.impl;
 import com.moodify.dto.AuthResponse;
 import com.moodify.dto.LoginRequest;
 import com.moodify.dto.RegisterRequest;
+import com.moodify.entity.NotificationLog;
 import com.moodify.entity.User;
 import com.moodify.entity.UserPreference;
+import com.moodify.repository.NotificationLogRepository;
 import com.moodify.repository.UserPreferenceRepository;
 import com.moodify.repository.UserRepository;
 import com.moodify.security.JwtService;
 import com.moodify.service.AuthService;
+import com.moodify.service.NotificationService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final UserPreferenceRepository preferenceRepository;
+    private final NotificationLogRepository notificationLogRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -29,12 +34,14 @@ public class AuthServiceImpl implements AuthService {
 
     public AuthServiceImpl(UserRepository userRepository,
                            UserPreferenceRepository preferenceRepository,
+                           NotificationLogRepository notificationLogRepository,
                            PasswordEncoder passwordEncoder,
                            JwtService jwtService,
                            AuthenticationManager authenticationManager,
                            UserDetailsService userDetailsService) {
         this.userRepository = userRepository;
         this.preferenceRepository = preferenceRepository;
+        this.notificationLogRepository = notificationLogRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -58,6 +65,13 @@ public class AuthServiceImpl implements AuthService {
 
         UserPreference preference = new UserPreference(user);
         preferenceRepository.save(preference);
+
+        // Welcome notification — shows up in Alerts immediately
+        NotificationLog welcome = new NotificationLog();
+        welcome.setUser(user);
+        welcome.setType("SUPPORT");
+        welcome.setMessage("Welcome to Moodify, " + user.getName() + "! 🎉 I'm your companion. Start by logging your first mood — I'll be right here with you. 💜");
+        notificationLogRepository.save(welcome);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);

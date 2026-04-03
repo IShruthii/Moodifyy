@@ -86,11 +86,20 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const { listening, supported: sttSupported, startListening, stopListening } =
     useSpeechRecognition({ onResult: handleVoiceResult })
 
-  // Refresh bot settings each time panel opens
+  // Refresh bot settings each time panel opens + reset welcome if name changed
   useEffect(() => {
     if (isOpen) {
       const fresh = getBotSettings()
       setBotSettings(fresh)
+      // If stored messages exist, keep them — otherwise reset welcome with new name
+      const stored = localStorage.getItem(CHAT_STORAGE_KEY)
+      if (!stored) {
+        setMessages([{
+          sender: 'BOT',
+          text: `Hey! I'm ${fresh.name} 💜 How are you feeling right now? I'm here to listen.`,
+          time: new Date(),
+        }])
+      }
     }
   }, [isOpen])
 
@@ -249,6 +258,23 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
                 {voiceEnabled ? '🔊' : '🔇'}
               </button>
             )}
+            <button
+              className="chatbot-clear-btn"
+              onClick={() => {
+                const fresh = getBotSettings()
+                localStorage.removeItem(CHAT_STORAGE_KEY)
+                localStorage.removeItem(SESSION_STORAGE_KEY)
+                setSessionId(null)
+                setMessages([{
+                  sender: 'BOT',
+                  text: `Hey! I'm ${fresh.name} 💜 How are you feeling right now? I'm here to listen.`,
+                  time: new Date(),
+                }])
+              }}
+              title="Clear chat history"
+            >
+              🗑️
+            </button>
             <button className="chatbot-close" onClick={onClose}>✕</button>
           </div>
         </div>

@@ -41,9 +41,12 @@ export default function AlertsPage() {
   const { notifications, fetchNotifications, markRead } = useNotifications()
 
   useEffect(() => {
-    fetchNotifications()
-    markRead()
-  }, [])
+    // Fetch fresh notifications every time this page is opened
+    fetchNotifications().then(() => {
+      // Mark as read after fetching so unread count updates
+      setTimeout(() => markRead(), 500)
+    })
+  }, [fetchNotifications])
 
   const grouped = groupByDate(notifications)
 

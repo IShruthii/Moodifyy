@@ -42,4 +42,16 @@ public class NotificationController {
         notificationService.markAllRead(userId);
         return ResponseEntity.ok(ApiResponse.success("All notifications marked as read", null));
     }
+
+    // Creates a welcome notification for users who have none yet (existing users)
+    @PostMapping("/welcome")
+    public ResponseEntity<ApiResponse<Void>> ensureWelcome() {
+        Long userId = securityUtils.getCurrentUserId();
+        if (notificationService.getUnreadCount(userId) == 0
+                && notificationService.getNotifications(userId).isEmpty()) {
+            notificationService.createNotification(userId, "SUPPORT",
+                "Welcome back! 💜 Log your mood today and let's see how you're doing.");
+        }
+        return ResponseEntity.ok(ApiResponse.success("OK", null));
+    }
 }

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { loginUser, registerUser } from '../api/authApi'
+import axiosInstance from '../api/axiosInstance'
 
 const AuthContext = createContext(null)
 
@@ -27,6 +28,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem('moodify_user', JSON.stringify({
       id: data.userId, name: data.name, email: data.email, profileSetup: data.profileSetup, gender: data.gender
     }))
+    // Ensure existing users get at least a welcome notification in Alerts
+    setTimeout(() => axiosInstance.post('/notifications/welcome').catch(() => {}), 1000)
     return data
   }
 
