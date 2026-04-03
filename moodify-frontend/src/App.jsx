@@ -61,10 +61,6 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
   if (loading) return <SplashScreen />
   if (!user) return <Navigate to="/login" replace />
-  // First-time users who haven't set up profile go to profile setup
-  if (!user.profileSetup && window.location.pathname !== '/profile') {
-    return <Navigate to="/profile" replace />
-  }
   return children
 }
 

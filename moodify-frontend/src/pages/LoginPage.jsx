@@ -29,8 +29,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const data = await login(form.email, form.password)
-      // Route based on profile completion
-      navigate(data.profileSetup ? '/dashboard' : '/profile', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password. Please try again.')
     } finally {
