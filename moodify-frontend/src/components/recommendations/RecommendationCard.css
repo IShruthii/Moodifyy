@@ -136,3 +136,22 @@
   border-radius: 20px;
   padding: 3px 10px;
 }
+
+/* Explainability reason tag */
+.rec-reason {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--accent-purple-light);
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin-top: 4px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+[data-mode="light"] .rec-reason {
+  background: rgba(124, 58, 237, 0.08);
+  color: var(--accent-purple);
+}

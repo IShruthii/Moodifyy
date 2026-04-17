@@ -23,6 +23,7 @@ public class RecommendationResponse {
         private String category;
         private String imageEmoji;
         private List<ActionLink> links;
+        private String reason; // explainability — "Picked for stress relief", etc.
 
         public RecommendationItem() {}
 
@@ -32,6 +33,11 @@ public class RecommendationResponse {
             this.category = category;
             this.imageEmoji = imageEmoji;
             this.links = links;
+        }
+
+        public RecommendationItem(String title, String description, String category, String imageEmoji, List<ActionLink> links, String reason) {
+            this(title, description, category, imageEmoji, links);
+            this.reason = reason;
         }
 
         public String getTitle() { return title; }
@@ -48,6 +54,9 @@ public class RecommendationResponse {
 
         public List<ActionLink> getLinks() { return links; }
         public void setLinks(List<ActionLink> links) { this.links = links; }
+
+        public String getReason() { return reason; }
+        public void setReason(String reason) { this.reason = reason; }
     }
 
     public static class ActionLink {

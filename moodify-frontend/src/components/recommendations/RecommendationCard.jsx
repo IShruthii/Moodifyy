@@ -152,6 +152,7 @@ export default function RecommendationCard({ item, mood, type }) {
           <div className="rec-info">
             <h4 className="rec-title">{item.title}</h4>
             <p className="rec-desc">{item.description}</p>
+            {item.reason && <span className="rec-reason">✦ {item.reason}</span>}
             <span className="place-activity-tag">{activity}</span>
           </div>
         </div>
@@ -176,6 +177,7 @@ export default function RecommendationCard({ item, mood, type }) {
         <div className="rec-info">
           <h4 className="rec-title">{item.title}</h4>
           <p className="rec-desc">{item.description}</p>
+          {item.reason && <span className="rec-reason">✦ {item.reason}</span>}
         </div>
       </div>
       <div className="rec-links">
