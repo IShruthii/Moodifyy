@@ -12,7 +12,6 @@ const QUICK_ACTIONS = [
   { key: 'NEED_HELP', label: '💙 Need Help',  color: '#ec4899' },
 ]
 
-// Personality → avatar emoji mapping
 const PERSONALITY_AVATARS = {
   flirty:       '😏',
   friendly:     '🤗',
@@ -26,12 +25,11 @@ const PERSONALITY_AVATARS = {
 function getBotSettings() {
   return {
     name:        localStorage.getItem('moodify_bot_name')        || 'Moo',
-    personality: localStorage.getItem('moodify_bot_personality') || 'flirty',
+    personality: localStorage.getItem('moodify_bot_personality') || 'friendly',
   }
 }
 
-// Persist messages to localStorage (keep last 30, strip time objects for storage)
-const CHAT_STORAGE_KEY = 'moodify_chat_messages'
+const CHAT_STORAGE_KEY   = 'moodify_chat_messages'
 const SESSION_STORAGE_KEY = 'moodify_chat_session_id'
 
 function loadStoredMessages(botName) {
@@ -39,8 +37,9 @@ function loadStoredMessages(botName) {
     const stored = localStorage.getItem(CHAT_STORAGE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
-      // Restore time as Date objects
-      return parsed.map(m => ({ ...m, time: new Date(m.time) }))
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map(m => ({ ...m, time: new Date(m.time) }))
+      }
     }
   } catch { /* ignore */ }
   return [{
@@ -52,29 +51,51 @@ function loadStoredMessages(botName) {
 
 function saveMessages(messages) {
   try {
-    // Keep last 30 messages only
-    const toSave = messages.slice(-30)
-    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(toSave))
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages.slice(-30)))
   } catch { /* ignore */ }
+}
+
+// Personality-aware retry messages — never show raw errors
+function getRetryMessage(personality, isTimeout) {
+  const timeout = {
+    flirty:       `I dozed off for a sec 😴 Give me ~50 seconds and I'll be right back for you 💜`,
+    friendly:     `Oops, server's waking up! Give it ~50 seconds and try again 🙌`,
+    sassy:        `Okay so the server decided to nap. Rude. Try again in ~50 seconds 💅`,
+    calm:         `The server is resting. Take a breath and try again in ~50 seconds 🌿`,
+    motivational: `Server cold start! 50 seconds and we're BACK. Don't give up! 🔥`,
+    therapist:    `The server needs a moment. Take a breath — try again in ~50 seconds 💙`,
+    funny:        `The server is doing its morning routine. ~50 seconds. We wait. 😂`,
+  }
+  const error = {
+    flirty:       `Something went wrong on my end 😔 Try again in a moment? I'm still here 💜`,
+    friendly:     `Hmm, something went wrong! Try sending that again? 💙`,
+    sassy:        `Well that didn't work. Try again — I'll pretend it didn't happen 👀`,
+    calm:         `A small hiccup. Take a breath and try again when you're ready 🌿`,
+    motivational: `Minor setback! Try again — we don't quit! 💪`,
+    therapist:    `Something went wrong, but I'm still here. Try again when you're ready 💙`,
+    funny:        `My brain buffered. Try again? 😂`,
+  }
+  const pool = isTimeout ? timeout : error
+  return pool[personality] || pool.friendly
 }
 
 export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const { currentMood } = useMood()
 
-  // Read bot settings fresh each time panel opens
   const [botSettings, setBotSettings] = useState(getBotSettings)
-
   const botAvatar = PERSONALITY_AVATARS[botSettings.personality] || '🎭'
 
-  const [messages, setMessages] = useState(() => loadStoredMessages(getBotSettings().name))
-  const [input,       setInput]       = useState('')
-  const [loading,     setLoading]     = useState(false)
-  const [sessionId,   setSessionId]   = useState(() => localStorage.getItem(SESSION_STORAGE_KEY) || null)
-  const [slowWarning, setSlowWarning] = useState(false)
+  const [messages,     setMessages]     = useState(() => loadStoredMessages(getBotSettings().name))
+  const [input,        setInput]        = useState('')
+  const [loading,      setLoading]      = useState(false)
+  const [sessionId,    setSessionId]    = useState(() => localStorage.getItem(SESSION_STORAGE_KEY) || null)
+  const [slowWarning,  setSlowWarning]  = useState(false)
   const [voiceEnabled, setVoiceEnabled] = useState(false)
+  const [needsRelogin, setNeedsRelogin] = useState(false)
 
   const userHasSentMessage = useRef(false)
-  const messagesEndRef = useRef(null)
+  const messagesEndRef     = useRef(null)
+  const retryPayload       = useRef(null)
 
   const { speaking, supported: ttsSupported, speak, stopSpeaking } = useSpeechSynthesis()
 
@@ -86,12 +107,12 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const { listening, supported: sttSupported, startListening, stopListening } =
     useSpeechRecognition({ onResult: handleVoiceResult })
 
-  // Refresh bot settings each time panel opens + reset welcome if name changed
+  // Refresh bot settings + welcome message when panel opens
   useEffect(() => {
     if (isOpen) {
       const fresh = getBotSettings()
       setBotSettings(fresh)
-      // If stored messages exist, keep them — otherwise reset welcome with new name
+      setNeedsRelogin(false)
       const stored = localStorage.getItem(CHAT_STORAGE_KEY)
       if (!stored) {
         setMessages([{
@@ -103,12 +124,12 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
     }
   }, [isOpen])
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Persist messages to localStorage
+  // Persist messages
   useEffect(() => {
     if (messages.length > 1) saveMessages(messages)
   }, [messages])
@@ -118,38 +139,38 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
     if (sessionId) localStorage.setItem(SESSION_STORAGE_KEY, sessionId)
   }, [sessionId])
 
-  // Speak bot replies when voice is on
+  // Voice reply
   useEffect(() => {
     if (!voiceEnabled || !ttsSupported || !userHasSentMessage.current) return
     const last = messages[messages.length - 1]
     if (last?.sender === 'BOT') { stopSpeaking(); speak(last.text) }
   }, [messages]) // eslint-disable-line
 
-  // Stop voice when panel closes
+  // Stop voice on close
   useEffect(() => {
     if (!isOpen) { stopSpeaking(); stopListening() }
   }, [isOpen]) // eslint-disable-line
 
-  useEffect(() => {
-    return () => { stopSpeaking(); stopListening() }
-  }, []) // eslint-disable-line
+  useEffect(() => () => { stopSpeaking(); stopListening() }, []) // eslint-disable-line
 
   const sendMessage = async (text, quickAction = null) => {
     const msg = (text || quickAction || '').trim()
-    if (!msg) return
+    if (!msg || loading) return
 
     userHasSentMessage.current = true
     setMessages(prev => [...prev, { sender: 'USER', text: msg, time: new Date() }])
     setInput('')
     setLoading(true)
     setSlowWarning(false)
+    setNeedsRelogin(false)
     stopSpeaking()
     if (onMessageSent) onMessageSent()
 
-    const slowTimer = setTimeout(() => setSlowWarning(true), 6000)
-
-    // Always read fresh settings so changes in Profile take effect immediately
+    const slowTimer = setTimeout(() => setSlowWarning(true), 7000)
     const { name: botName, personality: botPersonality } = getBotSettings()
+
+    // Store payload for retry
+    retryPayload.current = { msg, quickAction, botName, botPersonality }
 
     try {
       const res = await sendChatMessage({
@@ -160,49 +181,34 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
         botName,
         botPersonality,
       })
-      const data = res.data.data
-      if (!sessionId) setSessionId(data.sessionId)
+      const data = res.data?.data
+      if (!data) throw new Error('Empty response')
+
+      if (!sessionId && data.sessionId) setSessionId(data.sessionId)
+
       setMessages(prev => [...prev, {
         sender: 'BOT',
-        text: data.message,
+        text: data.message || "I'm here for you 💜",
         suggestions: data.suggestions,
         time: new Date(),
       }])
     } catch (err) {
+      const status = err.response?.status
       const isTimeout = err.code === 'ECONNABORTED'
         || err.message?.includes('timeout')
-        || err.message?.includes('Network')
-      const { name: botName, personality } = getBotSettings()
+        || err.message?.includes('Network Error')
 
-      // Personality-aware fallback messages
-      const timeoutFallbacks = {
-        flirty:       `I dozed off for a sec 😴 Give me ~50 seconds and I'll be right back for you 💜`,
-        friendly:     `Oops, server's waking up! Give it ~50 seconds and try again 🙌`,
-        sassy:        `Okay so the server decided to nap. Rude. Try again in ~50 seconds 💅`,
-        calm:         `The server is resting. Give it ~50 seconds and try again gently 🌿`,
-        motivational: `Server cold start! 50 seconds and we're BACK. Don't give up! 🔥`,
-        therapist:    `The server needs a moment. Take a breath — try again in ~50 seconds 💙`,
-        funny:        `The server is doing its morning routine. ~50 seconds. We wait. 😂`,
+      if (status === 401 || status === 403) {
+        // Session expired — show re-login prompt, don't redirect
+        setNeedsRelogin(true)
+      } else {
+        setMessages(prev => [...prev, {
+          sender: 'BOT',
+          text: getRetryMessage(botPersonality, isTimeout),
+          isRetryable: true,
+          time: new Date(),
+        }])
       }
-      const errorFallbacks = {
-        flirty:       `Something went wrong on my end 😔 Try again in a moment? I'm still here 💜`,
-        friendly:     `Hmm, something went wrong! Try sending that again? 💙`,
-        sassy:        `Well that didn't work. Try again — I'll pretend it didn't happen 👀`,
-        calm:         `A small hiccup. Take a breath and try again when you're ready 🌿`,
-        motivational: `Minor setback! Try again — we don't quit! 💪`,
-        therapist:    `Something went wrong, but I'm still here. Try again when you're ready 💙`,
-        funny:        `Error 404: my brain not found. Try again? 😂`,
-      }
-
-      const pool = isTimeout
-        ? (timeoutFallbacks[personality] || timeoutFallbacks.flirty)
-        : (errorFallbacks[personality] || errorFallbacks.flirty)
-
-      setMessages(prev => [...prev, {
-        sender: 'BOT',
-        text: pool,
-        time: new Date(),
-      }])
     } finally {
       setLoading(false)
       setSlowWarning(false)
@@ -210,19 +216,28 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
     }
   }
 
+  const handleRetry = () => {
+    if (!retryPayload.current) return
+    const { msg, quickAction } = retryPayload.current
+    sendMessage(msg, quickAction)
+  }
+
+  const clearChat = () => {
+    const fresh = getBotSettings()
+    localStorage.removeItem(CHAT_STORAGE_KEY)
+    localStorage.removeItem(SESSION_STORAGE_KEY)
+    setSessionId(null)
+    setNeedsRelogin(false)
+    retryPayload.current = null
+    setMessages([{
+      sender: 'BOT',
+      text: `Hey! I'm ${fresh.name} 💜 How are you feeling right now? I'm here to listen.`,
+      time: new Date(),
+    }])
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) }
-  }
-
-  const toggleVoice = () => {
-    if (voiceEnabled) stopSpeaking()
-    setVoiceEnabled(v => !v)
-  }
-
-  const handleMicClick = () => {
-    if (listening) { stopListening(); return }
-    stopSpeaking()
-    startListening()
   }
 
   if (!isOpen) return null
@@ -252,29 +267,13 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
             {ttsSupported && (
               <button
                 className={`chatbot-voice-toggle ${voiceEnabled ? 'active' : ''}`}
-                onClick={toggleVoice}
+                onClick={() => { if (voiceEnabled) stopSpeaking(); setVoiceEnabled(v => !v) }}
                 title={voiceEnabled ? 'Turn off voice replies' : 'Turn on voice replies'}
               >
                 {voiceEnabled ? '🔊' : '🔇'}
               </button>
             )}
-            <button
-              className="chatbot-clear-btn"
-              onClick={() => {
-                const fresh = getBotSettings()
-                localStorage.removeItem(CHAT_STORAGE_KEY)
-                localStorage.removeItem(SESSION_STORAGE_KEY)
-                setSessionId(null)
-                setMessages([{
-                  sender: 'BOT',
-                  text: `Hey! I'm ${fresh.name} 💜 How are you feeling right now? I'm here to listen.`,
-                  time: new Date(),
-                }])
-              }}
-              title="Clear chat history"
-            >
-              🗑️
-            </button>
+            <button className="chatbot-clear-btn" onClick={clearChat} title="Clear chat">🗑️</button>
             <button className="chatbot-close" onClick={onClose}>✕</button>
           </div>
         </div>
@@ -299,15 +298,26 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
           ))}
         </div>
 
+        {/* Session expired banner */}
+        {needsRelogin && (
+          <div className="chatbot-relogin-banner">
+            <span>Your session expired.</span>
+            <a href="/login" className="chatbot-relogin-link">Sign in again →</a>
+          </div>
+        )}
+
         {/* Messages */}
         <div className="chatbot-messages">
           {messages.map((msg, i) => (
             <div key={i} className={`chat-message ${msg.sender === 'USER' ? 'user' : 'bot'}`}>
-              {msg.sender === 'BOT' && (
-                <div className="bot-avatar">{botAvatar}</div>
-              )}
+              {msg.sender === 'BOT' && <div className="bot-avatar">{botAvatar}</div>}
               <div className="message-bubble">
                 <p className="message-text">{msg.text}</p>
+                {msg.isRetryable && (
+                  <button className="chatbot-retry-btn" onClick={handleRetry}>
+                    ↺ Try again
+                  </button>
+                )}
                 <span className="message-time">
                   {msg.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
@@ -322,10 +332,10 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
                 <span /><span /><span />
                 {slowWarning && (
                   <span className="slow-hint">
-                    {botSettings.personality === 'sassy' ? 'Server napping... 💅 ~50s' :
-                     botSettings.personality === 'funny' ? 'Loading brain... ~50s 😂' :
-                     botSettings.personality === 'motivational' ? 'Warming up! ~50s 🔥' :
-                     botSettings.personality === 'calm' ? 'Almost ready... 🌿' :
+                    {botSettings.personality === 'sassy'        ? 'Server napping... 💅 ~50s'  :
+                     botSettings.personality === 'funny'        ? 'Loading brain... ~50s 😂'   :
+                     botSettings.personality === 'motivational' ? 'Warming up! ~50s 🔥'        :
+                     botSettings.personality === 'calm'         ? 'Almost ready... 🌿'          :
                      'Waking up... ~50s ☕'}
                   </span>
                 )}
@@ -337,11 +347,10 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
 
         {/* Input area */}
         <div className="chatbot-input-area">
-          {/* Mic — always show on mobile, conditionally on desktop */}
           {(sttSupported || /Android|iPhone|iPad/i.test(navigator.userAgent)) && (
             <button
               className={`chatbot-mic-btn ${listening ? 'listening' : ''}`}
-              onClick={handleMicClick}
+              onClick={() => { if (listening) { stopListening(); return } stopSpeaking(); startListening() }}
               title={listening ? 'Stop listening' : `Speak to ${botSettings.name}`}
             >
               {listening ? '⏹' : '🎙️'}
@@ -354,7 +363,7 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
             onKeyDown={handleKeyDown}
             placeholder={listening ? 'Listening...' : `Talk to ${botSettings.name}...`}
             rows={1}
-            disabled={listening}
+            disabled={listening || loading}
             autoComplete="off"
             autoCorrect="on"
             spellCheck="true"

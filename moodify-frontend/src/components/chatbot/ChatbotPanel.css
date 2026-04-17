@@ -526,3 +526,48 @@
   border-color: rgba(239, 68, 68, 0.3);
   color: #f87171;
 }
+
+/* Retry button inside message bubble */
+.chatbot-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.1);
+  color: var(--accent-purple-light);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-family);
+}
+
+.chatbot-retry-btn:hover {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: var(--accent-purple);
+}
+
+/* Session expired banner */
+.chatbot-relogin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  font-size: 13px;
+  color: #fca5a5;
+}
+
+.chatbot-relogin-link {
+  color: #f87171;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid #f87171;
+}
+
+.chatbot-relogin-link:hover { opacity: 0.8; }

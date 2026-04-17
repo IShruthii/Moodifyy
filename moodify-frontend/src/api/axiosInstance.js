@@ -28,9 +28,10 @@ axiosInstance.interceptors.response.use(
   (error) => {
     const status = error.response?.status
     const url = error.config?.url || ''
-    // Auto-logout on 401, or 400 on protected endpoints (not login/register)
     const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register')
-    if (status === 401 && !isAuthEndpoint) {
+    // Do NOT auto-logout for chatbot — handle gracefully in the component
+    const isChatEndpoint = url.includes('/companion/chat')
+    if (status === 401 && !isAuthEndpoint && !isChatEndpoint) {
       localStorage.removeItem('moodify_token')
       localStorage.removeItem('moodify_user')
       window.location.href = '/login'
