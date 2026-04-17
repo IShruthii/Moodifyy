@@ -1,3 +1,6 @@
+/* ═══════════════════════════════════════════════
+   DESKTOP CHATBOT PANEL
+   ═══════════════════════════════════════════════ */
 .chatbot-overlay {
   position: fixed;
   inset: 0;
@@ -25,9 +28,10 @@
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* ── Header ── */
 .chatbot-header {
   display: flex;
   align-items: center;
@@ -35,6 +39,7 @@
   padding: 16px 20px;
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(236, 72, 153, 0.1) 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
 }
 
 .chatbot-avatar {
@@ -62,18 +67,31 @@
   border: 2px solid #1a1035;
 }
 
-.chatbot-header-info { flex: 1; }
+.chatbot-header-info { flex: 1; min-width: 0; }
 
 .chatbot-name {
   font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chatbot-status {
   font-size: 12px;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatbot-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .chatbot-close {
@@ -95,6 +113,8 @@
   background: rgba(236, 72, 153, 0.2);
   color: var(--accent-pink);
 }
+
+/* ── Quick actions ── */
 .chatbot-quick-actions {
   display: flex;
   gap: 6px;
@@ -102,6 +122,7 @@
   overflow-x: auto;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   scrollbar-width: none;
+  flex-shrink: 0;
 }
 
 .chatbot-quick-actions::-webkit-scrollbar { display: none; }
@@ -118,6 +139,7 @@
   white-space: nowrap;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  font-family: var(--font-family);
 }
 
 .quick-action-btn:hover {
@@ -125,6 +147,40 @@
   color: white;
 }
 
+/* ── Voice banner ── */
+.voice-mode-banner {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(20, 184, 166, 0.1));
+  border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--accent-purple-light);
+  text-align: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ── Re-login banner ── */
+.chatbot-relogin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  font-size: 13px;
+  color: #fca5a5;
+  flex-shrink: 0;
+}
+
+.chatbot-relogin-link {
+  color: #f87171;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid #f87171;
+}
+
+/* ── Messages ── */
 .chatbot-messages {
   flex: 1;
   overflow-y: auto;
@@ -134,6 +190,7 @@
   gap: 12px;
   scrollbar-width: thin;
   scrollbar-color: rgba(124, 58, 237, 0.3) transparent;
+  min-height: 0; /* critical for flex scroll */
 }
 
 .chat-message {
@@ -142,9 +199,7 @@
   animation: fadeIn 0.3s ease;
 }
 
-.chat-message.user {
-  flex-direction: row-reverse;
-}
+.chat-message.user { flex-direction: row-reverse; }
 
 .bot-avatar {
   width: 30px;
@@ -185,6 +240,7 @@
   color: var(--text-primary);
   line-height: 1.5;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .message-time {
@@ -193,7 +249,7 @@
   align-self: flex-end;
 }
 
-/* Typing indicator */
+/* ── Typing indicator ── */
 .message-bubble.typing {
   display: flex;
   flex-direction: row;
@@ -215,15 +271,26 @@
 
 @keyframes bounce {
   0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
+  30%           { transform: translateY(-6px); }
 }
 
+.slow-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: 6px;
+  white-space: nowrap;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ── Input area ── */
 .chatbot-input-area {
   display: flex;
   gap: 8px;
   padding: 12px 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  align-items: flex-end;
 }
 
 .chatbot-input {
@@ -239,12 +306,11 @@
   outline: none;
   transition: border-color 0.2s ease;
   max-height: 80px;
+  min-height: 40px;
+  line-height: 1.4;
 }
 
-.chatbot-input:focus {
-  border-color: var(--accent-purple);
-}
-
+.chatbot-input:focus { border-color: var(--accent-purple); }
 .chatbot-input::placeholder { color: var(--text-muted); }
 
 .chatbot-send-btn {
@@ -269,159 +335,9 @@
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
 }
 
-.chatbot-send-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+.chatbot-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-@media (max-width: 768px) {
-  /* Overlay fills entire screen, no padding */
-  .chatbot-overlay {
-    padding: 0;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  /* Panel takes full width, height adapts to keyboard via dvh */
-  .chatbot-panel {
-    width: 100%;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    /* dvh shrinks when keyboard opens — critical fix */
-    height: 92dvh;
-    /* Fallback for browsers without dvh */
-    height: 92vh;
-    max-height: 92dvh;
-    max-height: 92vh;
-  }
-
-  /* Header — compact on mobile */
-  .chatbot-header {
-    padding: 12px 14px;
-    flex-shrink: 0;
-  }
-
-  /* Quick actions — compact */
-  .chatbot-quick-actions {
-    padding: 8px 12px;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-
-  .quick-action-btn {
-    padding: 6px 10px;
-    font-size: 11px;
-  }
-
-  /* Voice banner — compact */
-  .voice-mode-banner {
-    padding: 6px 12px;
-    font-size: 11px;
-    flex-shrink: 0;
-  }
-
-  /* Messages — takes all remaining space, scrollable */
-  .chatbot-messages {
-    flex: 1;
-    min-height: 0;        /* critical — allows flex child to shrink */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 10px 12px;
-  }
-
-  .message-text { font-size: 14px; }
-
-  /* Input area — ALWAYS pinned at bottom, never hidden */
-  .chatbot-input-area {
-    flex-shrink: 0;       /* never shrink */
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    padding: 10px 12px;
-    /* Safe area for iPhone home bar */
-    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
-    background: #1a1035;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    /* Ensure it's always on top */
-    position: relative;
-    z-index: 10;
-    /* Minimum height so it's always tappable */
-    min-height: 60px;
-  }
-
-  /* Input field — 16px prevents iOS auto-zoom */
-  .chatbot-input {
-    font-size: 16px !important;
-    min-height: 40px;
-    max-height: 100px;
-    padding: 10px 12px;
-    line-height: 1.4;
-  }
-
-  /* Buttons — thumb-friendly size */
-  .chatbot-send-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .chatbot-mic-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-}
-
-/* Header actions row */
-.chatbot-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Voice toggle button */
-.chatbot-voice-toggle {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.chatbot-voice-toggle.active {
-  background: rgba(124, 58, 237, 0.25);
-  border-color: var(--accent-purple);
-  color: var(--accent-purple-light);
-  box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
-}
-
-.chatbot-voice-toggle:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-/* Voice mode banner */
-.voice-mode-banner {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(20, 184, 166, 0.1));
-  border-bottom: 1px solid rgba(124, 58, 237, 0.2);
-  padding: 8px 16px;
-  font-size: 12px;
-  color: var(--accent-purple-light);
-  text-align: center;
-  font-weight: 600;
-}
-
-/* Mic button */
+/* ── Mic button ── */
 .chatbot-mic-btn {
   width: 40px;
   height: 40px;
@@ -456,28 +372,29 @@
   50%       { box-shadow: 0 0 0 8px rgba(236, 72, 153, 0); }
 }
 
-/* Per-message speak button */
-.msg-speak-btn {
-  background: none;
-  border: none;
-  font-size: 14px;
+/* ── Voice toggle ── */
+.chatbot-voice-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  align-self: flex-end;
-  padding: 4px;
-  flex-shrink: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-.chat-message.bot:hover .msg-speak-btn {
-  opacity: 0.6;
+.chatbot-voice-toggle.active {
+  background: rgba(124, 58, 237, 0.25);
+  border-color: var(--accent-purple);
+  color: var(--accent-purple-light);
 }
 
-.msg-speak-btn:hover {
-  opacity: 1 !important;
-}
-
-/* Stop speaking button */
+/* ── Stop / Clear buttons ── */
 .chatbot-stop-btn {
   background: rgba(236, 72, 153, 0.15);
   border: 1px solid rgba(236, 72, 153, 0.4);
@@ -493,19 +410,6 @@
   transition: all 0.2s ease;
 }
 
-.chatbot-stop-btn:hover {
-  background: rgba(236, 72, 153, 0.3);
-}
-
-.slow-hint {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: 6px;
-  white-space: nowrap;
-  animation: fadeIn 0.3s ease;
-}
-
-/* Clear chat button */
 .chatbot-clear-btn {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -527,7 +431,7 @@
   color: #f87171;
 }
 
-/* Retry button inside message bubble */
+/* ── Retry button ── */
 .chatbot-retry-btn {
   display: inline-flex;
   align-items: center;
@@ -550,24 +454,171 @@
   border-color: var(--accent-purple);
 }
 
-/* Session expired banner */
-.chatbot-relogin-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: rgba(239, 68, 68, 0.1);
-  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-  font-size: 13px;
-  color: #fca5a5;
+/* ═══════════════════════════════════════════════
+   MOBILE — FULL SCREEN CHAT
+   Converts to full-screen on mobile for proper
+   keyboard handling and scroll behavior.
+   Desktop panel is completely unchanged.
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Full-screen overlay — no padding, no blur */
+  .chatbot-overlay {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: none; /* performance on mobile */
+  }
+
+  /* Full-screen panel */
+  .chatbot-panel {
+    width: 100%;
+    border-radius: 0;
+    /* Use dvh so panel shrinks when keyboard opens */
+    /* vh first as fallback, dvh overrides in supporting browsers */
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    /* Remove overflow:hidden — let flex handle it */
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    /* Prevent panel from being taller than viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  /* Header — compact, fixed height */
+  .chatbot-header {
+    padding: 10px 14px;
+    flex-shrink: 0;
+    /* Ensure header is always visible */
+    min-height: 56px;
+  }
+
+  .chatbot-avatar { width: 36px; height: 36px; }
+  .chatbot-avatar-emoji { font-size: 18px; }
+  .chatbot-name { font-size: 15px; }
+  .chatbot-status { font-size: 11px; }
+
+  /* Quick actions — compact, fixed height */
+  .chatbot-quick-actions {
+    padding: 6px 12px;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .quick-action-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  /* Voice banner */
+  .voice-mode-banner {
+    padding: 5px 12px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  /* Re-login banner */
+  .chatbot-relogin-banner {
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  /* Messages — THE KEY FIX:
+     flex:1 + min-height:0 + overflow-y:auto
+     This makes the messages area take all available space
+     and scroll independently, leaving input always visible */
+  .chatbot-messages {
+    flex: 1;
+    min-height: 0;           /* CRITICAL — without this, flex child won't shrink */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .message-text { font-size: 14px; }
+  .message-bubble { max-width: 82%; }
+
+  /* Input area — THE KEY FIX:
+     flex-shrink:0 ensures it NEVER gets compressed
+     padding-bottom with safe-area handles iPhone home bar
+     background ensures it's not transparent over messages */
+  .chatbot-input-area {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 10px 12px;
+    /* Safe area for iPhone home bar + extra breathing room */
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    background: #1a1035;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    /* Always on top of everything */
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Input — 16px PREVENTS iOS auto-zoom (critical) */
+  .chatbot-input {
+    font-size: 16px !important;
+    min-height: 44px;
+    max-height: 120px;
+    padding: 10px 12px;
+    line-height: 1.4;
+    /* Ensure it's always visible */
+    flex: 1;
+  }
+
+  /* Buttons — thumb-friendly 44px minimum */
+  .chatbot-send-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    flex-shrink: 0;
+    align-self: flex-end;
+  }
+
+  .chatbot-mic-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    flex-shrink: 0;
+    align-self: flex-end;
+  }
+
+  /* Header action buttons — slightly larger on mobile */
+  .chatbot-voice-toggle,
+  .chatbot-stop-btn,
+  .chatbot-clear-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+
+  .chatbot-close {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
 }
 
-.chatbot-relogin-link {
-  color: #f87171;
-  font-weight: 700;
-  text-decoration: none;
-  border-bottom: 1px solid #f87171;
+/* Extra small screens (320px) */
+@media (max-width: 360px) {
+  .chatbot-header { padding: 8px 10px; }
+  .chatbot-name { font-size: 14px; }
+  .chatbot-quick-actions { padding: 5px 10px; }
+  .quick-action-btn { padding: 4px 8px; font-size: 10px; }
+  .chatbot-input-area { padding: 8px 10px; padding-bottom: max(10px, env(safe-area-inset-bottom, 10px)); gap: 6px; }
+  .chatbot-send-btn, .chatbot-mic-btn { width: 40px; height: 40px; }
+  /* Hide voice toggle on very small screens to save space */
+  .chatbot-voice-toggle { display: none; }
 }
-
-.chatbot-relogin-link:hover { opacity: 0.8; }

@@ -153,6 +153,21 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
 
   useEffect(() => () => { stopSpeaking(); stopListening() }, []) // eslint-disable-line
 
+  // Android keyboard fix: scroll messages to bottom when keyboard opens
+  useEffect(() => {
+    if (!isOpen) return
+    const isMobile = window.innerWidth <= 768
+    if (!isMobile || !window.visualViewport) return
+    const handler = () => {
+      // When keyboard opens, scroll messages to bottom so latest is visible
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+    window.visualViewport.addEventListener('resize', handler)
+    return () => window.visualViewport.removeEventListener('resize', handler)
+  }, [isOpen])
+
   const sendMessage = async (text, quickAction = null) => {
     const msg = (text || quickAction || '').trim()
     if (!msg || loading) return
@@ -367,6 +382,8 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
             autoComplete="off"
             autoCorrect="on"
             spellCheck="true"
+            inputMode="text"
+            enterKeyHint="send"
           />
           <button
             className="chatbot-send-btn"
