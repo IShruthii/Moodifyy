@@ -39,6 +39,9 @@ public class UserPreference {
     @Column(name = "bot_personality")
     private String botPersonality = "flirty";
 
+    @Column(name = "voice_preference")
+    private String voicePreference = "auto"; // auto | female | male | neutral
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -84,6 +87,9 @@ public class UserPreference {
 
     public String getBotPersonality() { return botPersonality; }
     public void setBotPersonality(String botPersonality) { this.botPersonality = botPersonality; }
+
+    public String getVoicePreference() { return voicePreference; }
+    public void setVoicePreference(String voicePreference) { this.voicePreference = voicePreference; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }

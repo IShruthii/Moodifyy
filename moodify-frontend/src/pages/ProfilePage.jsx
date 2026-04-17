@@ -6,6 +6,7 @@ import ChatbotFAB from '../components/chatbot/ChatbotFAB'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { getPreference, savePreference } from '../api/preferenceApi'
+import { useAvailableVoices, pickVoice, categorizeVoice } from '../hooks/useVoice'
 import './ProfilePage.css'
 
 const PERSONALITIES = [
@@ -21,6 +22,9 @@ const PERSONALITIES = [
 export default function ProfilePage() {
   const { user, updateUser } = useAuth()
   const { changeTheme, darkMode, toggleDarkMode, theme } = useTheme()
+  const { voices: availableVoices, loaded: voicesLoaded, supported: ttsSupported } = useAvailableVoices()
+  const [testVoiceStatus, setTestVoiceStatus] = useState('')
+
   const [form, setForm] = useState({
     displayName: '',
     avatarId: 'avatar_1',
@@ -30,6 +34,7 @@ export default function ProfilePage() {
     musicLanguage: 'english',
     botName: 'Moo',
     botPersonality: 'flirty',
+    voicePreference: 'auto',
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -49,6 +54,7 @@ export default function ProfilePage() {
           musicLanguage: pref.musicLanguage || 'english',
           botName: pref.botName || 'Moo',
           botPersonality: pref.botPersonality || 'flirty',
+          voicePreference: pref.voicePreference || 'auto',
         })
         changeTheme(pref.theme || 'soft_purple')
       })
@@ -70,6 +76,12 @@ export default function ProfilePage() {
     }
   }, [form.botPersonality, loading])
 
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('moodify_voice_preference', form.voicePreference || 'auto')
+    }
+  }, [form.voicePreference, loading])
+
   const handleSave = async () => {
     setSaving(true)
     setSaveError('')
@@ -80,6 +92,7 @@ export default function ProfilePage() {
       // Persist bot settings immediately
       localStorage.setItem('moodify_bot_name', form.botName || 'Moo')
       localStorage.setItem('moodify_bot_personality', form.botPersonality || 'flirty')
+      localStorage.setItem('moodify_voice_preference', form.voicePreference || 'auto')
       // Notify service worker of personality change so scheduled notifications update
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then(reg => {
@@ -153,7 +166,32 @@ export default function ProfilePage() {
     }
   }
 
+  const handleTestVoice = () => {
+    if (!ttsSupported) { setTestVoiceStatus('unsupported'); return }
+    window.speechSynthesis.cancel()
+    const voices = availableVoices
+    const chosen = pickVoice(form.voicePreference, voices)
+    const utterance = new SpeechSynthesisUtterance(
+      `Hi! I'm ${form.botName || 'Moo'}, your companion. This is how I sound with your selected voice.`
+    )
+    utterance.rate = 0.95
+    utterance.pitch = 1.0
+    if (chosen) utterance.voice = chosen
+    utterance.onend = () => setTestVoiceStatus('')
+    utterance.onerror = () => setTestVoiceStatus('error')
+    setTestVoiceStatus('speaking')
+    window.speechSynthesis.speak(utterance)
+  }
+
+  const stopTestVoice = () => {
+    window.speechSynthesis.cancel()
+    setTestVoiceStatus('')
+  }
+
   const selectedPersonality = PERSONALITIES.find(p => p.key === form.botPersonality) || PERSONALITIES[0]
+  const femaleVoices  = availableVoices.filter(v => categorizeVoice(v) === 'female')
+  const maleVoices    = availableVoices.filter(v => categorizeVoice(v) === 'male')
+  const neutralVoices = availableVoices.filter(v => categorizeVoice(v) === 'neutral')
 
   return (
     <Layout>
@@ -275,6 +313,105 @@ export default function ProfilePage() {
                 Sends a test notification in your selected personality style
               </p>
             </div>
+          </div>
+
+          {/* ── Voice Settings ── */}
+          <div className="profile-section glass voice-section">
+            <h2 className="profile-section-title">🔊 Companion Voice</h2>
+            <p className="companion-desc">
+              Choose how your companion sounds when voice replies are on.
+              {!ttsSupported && <span className="voice-unsupported"> Voice not supported in this browser.</span>}
+            </p>
+
+            {ttsSupported && (
+              <>
+                {/* Quick category buttons */}
+                <div>
+                  <label className="label" style={{ marginBottom: 10 }}>Voice Type</label>
+                  <div className="voice-category-row">
+                    {[
+                      { key: 'auto',    label: 'Auto',    emoji: '🎙️', desc: 'Browser default' },
+                      { key: 'female',  label: 'Female',  emoji: '👩', desc: femaleVoices.length > 0 ? `${femaleVoices.length} available` : 'May not be available' },
+                      { key: 'male',    label: 'Male',    emoji: '👨', desc: maleVoices.length > 0 ? `${maleVoices.length} available` : 'May not be available' },
+                      { key: 'neutral', label: 'Neutral', emoji: '🧑', desc: neutralVoices.length > 0 ? `${neutralVoices.length} available` : 'May not be available' },
+                    ].map(opt => (
+                      <button
+                        key={opt.key}
+                        className={`voice-cat-btn ${form.voicePreference === opt.key ? 'selected' : ''}`}
+                        onClick={() => setForm({ ...form, voicePreference: opt.key })}
+                      >
+                        <span className="voice-cat-emoji">{opt.emoji}</span>
+                        <span className="voice-cat-label">{opt.label}</span>
+                        <span className="voice-cat-desc">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Specific voice picker — only show if voices loaded */}
+                {voicesLoaded && availableVoices.length > 0 && (
+                  <div>
+                    <label className="label" style={{ marginBottom: 8 }}>
+                      Specific Voice
+                      <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: 6 }}>(optional)</span>
+                    </label>
+                    <select
+                      className="input voice-select"
+                      value={['auto','female','male','neutral'].includes(form.voicePreference) ? '' : form.voicePreference}
+                      onChange={e => setForm({ ...form, voicePreference: e.target.value || 'auto' })}
+                    >
+                      <option value="">— Use category selection above —</option>
+                      {availableVoices.map(v => (
+                        <option key={v.voiceURI} value={v.voiceURI}>
+                          {v.name} ({categorizeVoice(v)}) {v.localService ? '📱' : '☁️'}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="voice-select-hint">
+                      📱 = device voice (works offline) · ☁️ = cloud voice (needs internet)
+                    </p>
+                  </div>
+                )}
+
+                {!voicesLoaded && (
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                    Loading available voices...
+                  </p>
+                )}
+
+                {voicesLoaded && availableVoices.length === 0 && (
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                    No English voices found on this device. Voice replies will use the system default.
+                  </p>
+                )}
+
+                {/* Test voice button */}
+                <div className="voice-test-row">
+                  {testVoiceStatus === 'speaking' ? (
+                    <button className="btn btn-secondary" onClick={stopTestVoice}>
+                      ⏹ Stop
+                    </button>
+                  ) : (
+                    <button className="btn btn-secondary" onClick={handleTestVoice}>
+                      ▶ Test Voice
+                    </button>
+                  )}
+                  {testVoiceStatus === 'unsupported' && (
+                    <span className="companion-test-status companion-test-err">
+                      ⚠️ Voice not supported in this browser
+                    </span>
+                  )}
+                  {testVoiceStatus === 'error' && (
+                    <span className="companion-test-status companion-test-err">
+                      ⚠️ Voice playback failed
+                    </span>
+                  )}
+                  <p className="companion-test-hint">
+                    Plays a sample using your selected voice
+                  </p>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Theme */}

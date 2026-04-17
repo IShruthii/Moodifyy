@@ -47,6 +47,8 @@ public class PreferenceServiceImpl implements PreferenceService {
             preference.setBotName(request.getBotName().trim());
         if (request.getBotPersonality() != null && !request.getBotPersonality().isBlank())
             preference.setBotPersonality(request.getBotPersonality());
+        if (request.getVoicePreference() != null && !request.getVoicePreference().isBlank())
+            preference.setVoicePreference(request.getVoicePreference());
 
         return preferenceRepository.save(preference);
     }

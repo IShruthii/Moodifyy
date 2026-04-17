@@ -46,6 +46,7 @@ public class PreferenceController {
         dto.setMusicLanguage(p.getMusicLanguage());
         dto.setBotName(p.getBotName() != null ? p.getBotName() : "Moo");
         dto.setBotPersonality(p.getBotPersonality() != null ? p.getBotPersonality() : "flirty");
+        dto.setVoicePreference(p.getVoicePreference() != null ? p.getVoicePreference() : "auto");
         return dto;
     }
 }

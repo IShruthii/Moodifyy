@@ -10,6 +10,7 @@ public class PreferenceRequest {
     private String musicLanguage;
     private String botName;
     private String botPersonality;
+    private String voicePreference;
 
     public PreferenceRequest() {}
 
@@ -36,4 +37,7 @@ public class PreferenceRequest {
 
     public String getBotPersonality() { return botPersonality; }
     public void setBotPersonality(String botPersonality) { this.botPersonality = botPersonality; }
+
+    public String getVoicePreference() { return voicePreference; }
+    public void setVoicePreference(String voicePreference) { this.voicePreference = voicePreference; }
 }

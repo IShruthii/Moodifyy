@@ -85,6 +85,9 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const [botSettings, setBotSettings] = useState(getBotSettings)
   const botAvatar = PERSONALITY_AVATARS[botSettings.personality] || '🎭'
 
+  // Read voice preference from localStorage (set by ProfilePage)
+  const voicePreference = localStorage.getItem('moodify_voice_preference') || 'auto'
+
   const [messages,     setMessages]     = useState(() => loadStoredMessages(getBotSettings().name))
   const [input,        setInput]        = useState('')
   const [loading,      setLoading]      = useState(false)
@@ -97,7 +100,7 @@ export default function ChatbotPanel({ isOpen, onClose, onMessageSent }) {
   const messagesEndRef     = useRef(null)
   const retryPayload       = useRef(null)
 
-  const { speaking, supported: ttsSupported, speak, stopSpeaking } = useSpeechSynthesis()
+  const { speaking, supported: ttsSupported, speak, stopSpeaking } = useSpeechSynthesis(voicePreference)
 
   const handleVoiceResult = useCallback((transcript) => {
     setInput(transcript)
