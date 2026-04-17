@@ -5,6 +5,7 @@ import MoodSelector from '../components/mood/MoodSelector'
 import ChatbotFAB from '../components/chatbot/ChatbotFAB'
 import { logMood } from '../api/moodApi'
 import { useMood } from '../context/MoodContext'
+import { getPersonality, getMoodSubmitText } from '../utils/personality'
 import './MoodPage.css'
 
 const INTENSITY_LABELS = ['Barely', 'A little', 'Somewhat', 'Quite', 'Very', 'Extremely']
@@ -17,6 +18,8 @@ export default function MoodPage() {
   const [intensity, setIntensity] = useState(3)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const personality = getPersonality()
 
   const handleSubmit = async () => {
     if (!selectedMood) { setError('Please select how you are feeling'); return }
@@ -106,7 +109,7 @@ export default function MoodPage() {
               <span style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
                 <span className="auth-spinner" /> Saving...
               </span>
-            ) : selectedMood ? `Continue with ${selectedMood} ✨` : 'Select a mood to continue'}
+            ) : getMoodSubmitText(personality, selectedMood?.charAt(0) + selectedMood?.slice(1).toLowerCase())}
           </button>
         </div>
       </div>

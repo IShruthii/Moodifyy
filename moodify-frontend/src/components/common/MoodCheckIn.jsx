@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { logMood } from '../../api/moodApi'
 import { useMood } from '../../context/MoodContext'
 import FeedbackModal from './FeedbackModal'
+import { getPersonality, getTransitionMessage } from '../../utils/personality'
 import './MoodCheckIn.css'
 
 const MOODS = [
@@ -93,9 +94,10 @@ export default function MoodCheckIn({ initialMood, onDone, onSkip }) {
       await logMood({ mood: selected, note: `Mood check-in after session (was ${initialMood})` })
       setCurrentMood(selected)
       const type = getTransitionType(initialMood, selected)
+      const personality = getPersonality()
       setTransition({
         type,
-        message: pickMessage(type, fromData?.label || initialMood, toData?.label || selected),
+        message: getTransitionMessage(type, fromData?.label || initialMood, toData?.label || selected, personality),
       })
       setPhase('result')
     } finally {

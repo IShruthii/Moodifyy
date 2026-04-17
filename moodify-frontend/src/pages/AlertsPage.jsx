@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import Layout from '../components/common/Layout'
 import { useNotifications } from '../context/NotificationContext'
 import ChatbotFAB from '../components/chatbot/ChatbotFAB'
+import { getPersonality, getBotName, getEmptyStateText } from '../utils/personality'
 import './AlertsPage.css'
 
 const TYPE_ICONS = {
@@ -39,6 +40,9 @@ function groupByDate(notifications) {
 
 export default function AlertsPage() {
   const { notifications, fetchNotifications, markRead } = useNotifications()
+  const personality = getPersonality()
+  const botName = getBotName()
+  const emptyState = getEmptyStateText('notifications', personality)
 
   useEffect(() => {
     // Fetch fresh notifications every time this page is opened
@@ -55,14 +59,14 @@ export default function AlertsPage() {
       <div className="alerts-page animate-fade-in">
         <div className="alerts-header">
           <h1 className="page-title">Notifications</h1>
-          <p className="page-subtitle">Your reminders and updates 💌</p>
+          <p className="page-subtitle">Your reminders and updates from {botName} 💌</p>
         </div>
 
         {notifications.length === 0 ? (
           <div className="alerts-empty">
             <span className="alerts-empty-icon">🔔</span>
-            <h3>You're all caught up!</h3>
-            <p>Notifications will appear here when your companion has something to tell you 💜</p>
+            <h3>{emptyState.title}</h3>
+            <p>{emptyState.sub}</p>
           </div>
         ) : (
           <div className="alerts-groups">
